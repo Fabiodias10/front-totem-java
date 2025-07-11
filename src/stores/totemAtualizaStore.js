@@ -89,6 +89,30 @@ export const useTotemAtualizaStore = defineStore("totemAtualiza", {
         this.load = false;
       }
     },
+
+    async atualizaFundoTela(imagem) {
+      this.loadVersao = true;
+      try {
+        const response = await axios.get(
+          "http://localhost:8080/totem/update/fundo/" + imagem
+          // {http://localhost:8080/totem/update/fundo/fundo_plus_indigo.png
+          //   ip: this.ipTotem,
+          // }
+        );
+        console.log(response.data);
+
+        this.resposta = response.data;
+      } catch (error) {
+        // this.versaoAtualizada = null;
+        console.log("Erro ao conectar: ", error);
+        // (this.resposta = null), (this.conectado = false);
+      } finally {
+        // console.log("Finally do autenticaTotem");
+        // this.versaoAtualizada = "* Versão atualizada: " + versao;
+
+        this.loadVersao = false;
+      }
+    },
   },
   persist: true, //  ativa persistência automática
 });

@@ -5,7 +5,8 @@
       <q-card-section class="titulos">
         <q-separator vertical color="blue" />
         <div class="text-h1 column items-center">
-          <img src="../assets/logoPerto.png" width="140" />
+          <!-- <img src="../assets/logoPerto.png" width="140" /> -->
+          <img src="../assets/wps-perto.jpg" width="250" />
         </div>
         <div class="column items-center">Atualiza-Totem</div>
       </q-card-section>

@@ -13,7 +13,7 @@
 
         <q-toolbar-title> Atualiza Versao Totem </q-toolbar-title>
 
-        <div>v{{ $q.version }}</div>
+        <div>v 1.0.1</div>
       </q-toolbar>
     </q-header>
 

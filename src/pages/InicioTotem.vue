@@ -276,17 +276,44 @@ function AtualizaVersao() {
     persistent: true,
   })
     .onOk(async (data) => {
-      await totemAtualizaStore.atualizaTotem(data);
-      console.log(valor);
-      Notify.create({
-        type: "positive",
-        message: "Versao atualizada com sucesso!",
-        position: "top",
-      });
-      console.log(">>>> OK, received", data);
+      try {
+        await totemAtualizaStore.atualizaTotem(data);
+        console.log(valor);
+
+        Notify.create({
+          message: "Versão atualizada com sucesso!",
+          color: "green-7",
+          textColor: "white",
+          icon: "mdi-check-circle-outline",
+          position: "top-right",
+          timeout: 3000,
+          classes: "glossy shadow-5 rounded-borders text-body2",
+        });
+        console.log(">>>> OK, received", data);
+      } catch (err) {
+        Notify.create({
+          message: "Erro ao atualizar o áudio!",
+          color: "red-7",
+          textColor: "white",
+          icon: "mdi-alert-circle-outline",
+          position: "top-right",
+          timeout: 3000,
+        });
+      }
     })
+
     .onCancel(() => {
       console.log(">>>> Cancel");
+      Notify.create({
+        message: "Erro ao atualizar a versão!",
+        caption: "Verifique a conexão ou tente novamente.",
+        color: "red-5",
+        textColor: "white",
+        icon: "mdi-alert-circle-outline",
+        position: "top-right",
+        timeout: 5000,
+        classes: "shadow-5 rounded-borders text-body2",
+      });
     })
     .onDismiss(() => {
       console.log("I am triggered on both OK and Cancel");
@@ -303,9 +330,13 @@ function confirmAudioOriginal() {
     .onOk(async () => {
       await totemAtualizaStore.atualizaTotemAudioOriginal();
       Notify.create({
-        type: "positive",
-        message: "Audio atualizado com sucesso!",
-        position: "top",
+        message: "Audio Atualizado!",
+        color: "green-7",
+        textColor: "white",
+        icon: "mdi-check-circle-outline",
+        position: "top-right",
+        timeout: 3000,
+        classes: "glossy shadow-5 rounded-borders text-body2",
       });
       // console.log('>>>> OK')
     })
@@ -345,12 +376,16 @@ function AtualizaFundoTela() {
     persistent: true,
   })
     .onOk(async (data) => {
-      await totemAtualizaStore.atualizaTotem(data);
+      await totemAtualizaStore.atualizaFundoTela(data);
       console.log(valor);
       Notify.create({
-        type: "positive",
-        message: "Versao atualizada com sucesso!",
-        position: "top",
+        message: "Imagem fundo atualizado com sucesso!",
+        color: "green-7",
+        textColor: "white",
+        icon: "mdi-check-circle-outline",
+        position: "top-right",
+        timeout: 3000,
+        classes: "glossy shadow-5 rounded-borders text-body2",
       });
       console.log(">>>> OK, received", data);
     })
