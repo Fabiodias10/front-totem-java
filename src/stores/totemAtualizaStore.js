@@ -6,13 +6,25 @@ export const useTotemAtualizaStore = defineStore("totemAtualiza", {
     resposta: null,
     respostaAudioOriginal: null,
     respostaDownload: null,
+    versaoAtualizada: null,
+    audioAtualizado: null,
+    fundoTelaAtualizado: null,
 
-    load: false,
+    loadVersao: false,
   }),
   getters: {
     doubleCount: (state) => state.counter * 2,
   },
   actions: {
+    logout() {
+      (this.resposta = null),
+        (this.respostaAudioOriginal = null),
+        (this.respostaDownload = null),
+        (this.versaoAtualizada = null),
+        (this.audioAtualizado = null),
+        (this.fundoTelaAtualizado = null),
+        (loadVersao = null);
+    },
     async baixaOracle() {
       try {
         const response = await axios.get(
@@ -34,7 +46,7 @@ export const useTotemAtualizaStore = defineStore("totemAtualiza", {
       }
     },
     async atualizaTotem(versao) {
-      this.load = true;
+      this.loadVersao = true;
       try {
         const response = await axios.get(
           "http://localhost:8080/totem/update/versao/" + versao
@@ -45,14 +57,15 @@ export const useTotemAtualizaStore = defineStore("totemAtualiza", {
         console.log(response.data);
 
         this.resposta = response.data;
-        this.conectado = true;
       } catch (error) {
+        this.versaoAtualizada = null;
         console.log("Erro ao conectar: ", error);
         (this.resposta = null), (this.conectado = false);
       } finally {
-        console.log("Finally do autenticaTotem");
+        // console.log("Finally do autenticaTotem");
+        this.versaoAtualizada = "* Versão atualizada: " + versao;
 
-        this.load = false;
+        this.loadVersao = false;
       }
     },
     async atualizaTotemAudioOriginal() {

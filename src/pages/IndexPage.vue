@@ -66,15 +66,25 @@ defineOptions({
 });
 
 const count = ref(0);
+const ipTotem = ref(totemStore.ipTotem);
 
 // const load = ref(false);
 
 async function autentica() {
   await totemStore.autenticaTotem();
-  await totemStore.listaDiretorioLocal();
   await totemStore.listaDiretorioRemoto();
-  await totemAtualizaStore.baixaOracle();
-  console.log(totemStore.respostaDiretorioLocal.versaoTinker);
+
+  await totemStore.verificaDiretorioPacoteTotem();
+
+  if (!totemStore.existeDiretorio) {
+    await totemAtualizaStore.baixaOracle();
+  } else {
+    console.log("já eeexiste");
+  }
+
+  await totemStore.listaDiretorioLocal();
+
+  // console.log(totemStore.respostaDiretorioLocal.versaoTinker);
 
   if (totemStore.conectado) {
     Notify.create({

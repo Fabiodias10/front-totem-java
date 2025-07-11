@@ -17,7 +17,7 @@
         <q-space></q-space>
         <div class="q-pa-sm">
           <div class="q-mb-md">
-            <q-btn
+            <!-- <q-btn
               size="md"
               tabindex="3"
               style="background-color: white; color: black"
@@ -26,10 +26,30 @@
               class="q-mx-sm full-width"
               @click="AtualizaVersao()"
               :loading="totemStore.load"
-            ></q-btn>
+            ></q-btn> -->
+
+            <q-btn
+              label="VERSÃO"
+              icon="mdi-information-outline"
+              color="secondary"
+              text-color="white"
+              class="q-mb-sm"
+              unelevated
+              rounded
+              size="md"
+              style="width: 100%"
+              @click="AtualizaVersao()"
+              :loading="totemAtualizaStore.loadVersao"
+            >
+              <template v-slot:loading>
+                <q-spinner-gears class="on-left" />
+
+                Atualizando
+              </template>
+            </q-btn>
           </div>
           <div class="q-mb-md">
-            <q-btn
+            <!-- <q-btn
               size="md"
               tabindex="3"
               style="background-color: white; color: black"
@@ -38,10 +58,23 @@
               class="q-mx-sm full-width"
               @click="confirmAudioOriginal()"
               :loading="totemStore.load"
-            ></q-btn>
+            ></q-btn> -->
+
+            <q-btn
+              label="AUDIO ORIGINAL"
+              icon="mdi-volume-high"
+              color="secondary"
+              text-color="white"
+              class="q-mb-sm"
+              unelevated
+              rounded
+              size="md"
+              style="width: 100%"
+              @click="confirmAudioOriginal()"
+            />
           </div>
           <div class="q-mb-md">
-            <q-btn
+            <!-- <q-btn
               size="md"
               tabindex="3"
               style="background-color: white; color: black"
@@ -50,9 +83,22 @@
               class="q-mx-sm full-width"
               @click="AtualizaFundoTela()"
               :loading="totemStore.load"
-            ></q-btn>
+            ></q-btn> -->
+
+            <q-btn
+              label="ATUALIZA FUNDO DE TELA"
+              icon="mdi-image-refresh"
+              color="secondary"
+              text-color="white"
+              class="q-mb-sm"
+              unelevated
+              rounded
+              size="md"
+              style="width: 100%"
+              @click="AtualizaFundoTela()"
+            />
           </div>
-          <div>
+          <!-- <div>
             <q-card-section>
               <q-uploader
                 label="Audio personalizado"
@@ -63,10 +109,31 @@
                 style="max-width: 230px"
               />
             </q-card-section>
+          </div> -->
+
+          <div>
+            <q-card-section>
+              <q-uploader
+                label="Restaurar Database"
+                accept=".dump"
+                url="http://localhost:8080/restaurar"
+                field-name="arquivo"
+                :form-fields="[{ name: 'ip', value: totemStore.resposta.ip }]"
+                @uploaded="onUploadConcluido"
+                style="max-width: 250px"
+                dark
+                color="yellow"
+                text-color="black"
+                bg-color="silver"
+                auto-upload
+                hide-upload-progress
+              >
+              </q-uploader>
+            </q-card-section>
           </div>
         </div>
       </q-card-section>
-      <q-card class="col-6 q-pa-sm my-card" flat bordered>
+      <q-card class="col q-pa-sm my-card" flat bordered>
         <q-card-section>
           <div class="text-h6">Informações do Totem</div>
           <q-separator spaced />
@@ -144,6 +211,19 @@
             </q-item>
           </q-list>
         </q-card-section>
+        <!-- <p>{{ totemAtualizaStore.versaoAtualizada }}</p> -->
+        <div class="row justify-center q-ma-md">
+          <q-btn
+            label="Finalizar"
+            icon="mdi-logout"
+            color="negative"
+            text-color="white"
+            push
+            dense
+            class="q-ma-md"
+            @click="logout"
+          />
+        </div>
       </q-card>
     </q-card>
   </q-page>
@@ -161,7 +241,8 @@ import { useTotemStore } from "../stores/totemStore";
 import { useTotemAtualizaStore } from "../stores/totemAtualizaStore";
 const totemStore = useTotemStore();
 const totemAtualizaStore = useTotemAtualizaStore();
-
+import { useRouter } from "vue-router"; // ✅ IMPORTANTE
+const router = useRouter(); // ✅ HOOK DO VUE ROUTER
 defineOptions({
   name: "InicioTotem",
 });
@@ -291,16 +372,24 @@ function onUploadConcluido(info) {
 }
 
 function logout() {
-  totemStore.$reset();
   router.push("/"); // ou rota de login, se houver
+  localStorage.removeItem("totem"); // ou qualquer chave que você salvou
+  localStorage.removeItem("totemAtualiza");
+  // opcional: limpar tudo
+  // localStorage.clear()
 }
 
 const count = ref(0);
 onMounted(async () => {
+  // if (!totemStore.verificaDiretorioPacoteTotem) {
+  //   await totemAtualizaStore.baixaOracle();
+  // } else {
+  //   console.log("Diretorio atualizado ja existe ");
+  // }
   // alert(totemStore.respostaDiretorioLocal.versaoTinker);
-  if (!totemStore.resposta) {
-    await totemStore.autenticaTotem();
-  }
+  // if (!totemStore.resposta) {
+  //   await totemStore.autenticaTotem();
+  // }
 });
 </script>
 

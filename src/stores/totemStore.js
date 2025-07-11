@@ -9,11 +9,21 @@ export const useTotemStore = defineStore("totem", {
     respostaDiretorioLocal: null,
     respostaDiretorioRemoto: null,
     load: false,
+    existeDiretorio: null,
   }),
   getters: {
     doubleCount: (state) => state.counter * 2,
   },
   actions: {
+    logout() {
+      (this.ipTotem = null),
+        (this.conectado = null),
+        (this.resposta = null),
+        (this.respostaDiretorioLocal = null),
+        (this.respostaDiretorioRemoto = null),
+        (this.load = null),
+        (this.existeDiretorio = null);
+    },
     async autenticaTotem() {
       this.load = true;
       try {
@@ -27,6 +37,7 @@ export const useTotemStore = defineStore("totem", {
 
         this.resposta = response.data;
         this.conectado = true;
+        // verificaDiretorioPacoteTotem();
       } catch (error) {
         console.log("Erro ao conectar: ", error);
         (this.resposta = null), (this.conectado = false);
@@ -34,6 +45,28 @@ export const useTotemStore = defineStore("totem", {
         console.log("Finally do autenticaTotem");
 
         this.load = false;
+      }
+    },
+    async verificaDiretorioPacoteTotem() {
+      try {
+        const response = await axios.get(
+          "http://localhost:8080/oracle/verifica_pacote_totem"
+          // {
+          //   ip: this.ipTotem,
+          // }
+        );
+        console.log(response.data);
+
+        this.existeDiretorio = true;
+        // this.conectado = true;
+      } catch (error) {
+        console.log("Erro ao conectar: ", error);
+        // (this.resposta = null), (this.conectado = false);
+        this.existeDiretorio = false;
+      } finally {
+        console.log("Finally do autenticaTotem");
+
+        // this.load = false;
       }
     },
 
