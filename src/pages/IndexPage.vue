@@ -72,18 +72,27 @@ const ipTotem = ref(totemStore.ipTotem);
 // const load = ref(false);
 
 async function autentica() {
-  await totemStore.autenticaTotem();
+  try {
+    await totemStore.autenticaTotem();
+  } catch (e) {
+    Notify.create({
+      type: "negative",
+      message: "Não foi possivel conectar no totem",
+      position: "top",
+      timeout: 2000,
+      textColor: "white",
+    });
+    console.error("Falha na autenticação do totem:", e);
+    return; // ⚠️ Interrompe aqui se falhar
+  }
+
   await totemStore.listaDiretorioRemoto();
 
   await totemStore.verificaDiretorioPacoteTotem();
 
-  if (!totemStore.existeDiretorio) {
-    await totemAtualizaStore.baixaOracle();
-  } else {
-    console.log("já eeexiste");
+  if (totemStore.existeDiretorio) {
+    await totemStore.listaDiretorioLocal();
   }
-
-  await totemStore.listaDiretorioLocal();
 
   // console.log(totemStore.respostaDiretorioLocal.versaoTinker);
 
@@ -97,15 +106,7 @@ async function autentica() {
     });
     setTimeout(() => {
       router.push("/totem");
-    }, 1000);
-  } else {
-    Notify.create({
-      type: "negative",
-      message: "Erro ao conectar no Totem.",
-      position: "top",
-      timeout: 2000,
-      textColor: "white",
-    });
+    }, 100);
   }
 }
 </script>

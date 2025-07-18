@@ -28,7 +28,7 @@ export const useTotemStore = defineStore("totem", {
       this.load = true;
       try {
         const response = await axios.post(
-          "http://localhost:8080/totem/conecta",
+          "http://localhost:9095/totem/conecta",
           {
             ip: this.ipTotem,
           }
@@ -41,6 +41,7 @@ export const useTotemStore = defineStore("totem", {
       } catch (error) {
         console.log("Erro ao conectar: ", error);
         (this.resposta = null), (this.conectado = false);
+        throw error; // ⚠️ Propaga o erro para o `autentica()` capturar
       } finally {
         console.log("Finally do autenticaTotem");
 
@@ -50,7 +51,7 @@ export const useTotemStore = defineStore("totem", {
     async verificaDiretorioPacoteTotem() {
       try {
         const response = await axios.get(
-          "http://localhost:8080/oracle/verifica_pacote_totem"
+          "http://localhost:9095/oracle/verifica_pacote_totem"
           // {
           //   ip: this.ipTotem,
           // }
@@ -73,7 +74,7 @@ export const useTotemStore = defineStore("totem", {
     async listaDiretorioLocal() {
       try {
         const response = await axios.get(
-          "http://localhost:8080/totem/listar_diretorio_local"
+          "http://localhost:9095/totem/listar_diretorio_local"
         );
         console.log(response.data);
 
@@ -89,7 +90,7 @@ export const useTotemStore = defineStore("totem", {
     async listaDiretorioRemoto() {
       try {
         const response = await axios.get(
-          "http://localhost:8080/totem/listar_Diretorio_remoto"
+          "http://localhost:9095/totem/listar_Diretorio_remoto"
         );
         console.log(response.data);
 
@@ -97,6 +98,7 @@ export const useTotemStore = defineStore("totem", {
       } catch (error) {
         console.log("Erro ao conectar: ", error);
         this.respostaDiretorioRemoto = null;
+        throw error; // ⚠️ Propaga o erro para o `autentica()` capturar
       } finally {
         console.log("Finally do autenticaTotem");
       }

@@ -103,7 +103,7 @@
               <q-uploader
                 label="Audio personalizado"
                 accept="audio/*"
-                url="http://localhost:8080/upload"
+                url="http://localhost:9095/upload"
                 field-name="file"
                 @uploaded="onUploadConcluido"
                 style="max-width: 230px"
@@ -116,7 +116,7 @@
               <q-uploader
                 label="Restaurar Database"
                 accept=".dump"
-                url="http://localhost:8080/restaurar"
+                url="http://localhost:9095/restaurar"
                 field-name="arquivo"
                 :form-fields="[{ name: 'ip', value: totemStore.resposta.ip }]"
                 @uploaded="onUploadConcluido"
@@ -416,6 +416,35 @@ function logout() {
 
 const count = ref(0);
 onMounted(async () => {
+  if (totemStore.existeDiretorio) {
+    console.log(" onMonunted Diretorio existe");
+  } else {
+    console.log("onMonunted Diretoro nao existe");
+    var a = await totemAtualizaStore.baixaOracle();
+
+    const interval = setInterval(async () => {
+      await totemAtualizaStore.status(a).then(() => {
+        console.log(totemAtualizaStore.statusDownload.status);
+
+        if (
+          totemAtualizaStore.statusDownload?.status === "done" ||
+          totemAtualizaStore.statusDownload?.status === "error"
+        ) {
+          clearInterval(interval);
+          if (totemAtualizaStore.statusDownload.status === "done") {
+            totemStore.listaDiretorioLocal();
+            Notify.create({
+              type: "positive",
+              message: "Download concluido com sucesso!",
+              position: "top",
+              timeout: 1000,
+              textColor: "white",
+            });
+          }
+        }
+      });
+    }, 1000);
+  }
   // if (!totemStore.verificaDiretorioPacoteTotem) {
   //   await totemAtualizaStore.baixaOracle();
   // } else {
