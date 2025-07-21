@@ -1,117 +1,105 @@
 <template>
-  <q-page class="geral col-12 column self-center items-center justify-center">
-    <q-card class="row my-card shadow-3">
-      <!-- <q-card-section class="row justify-end items-center titulos">
-        <div class="text-h6">Logout</div>
-        <div>
-          <q-btn dense icon="logout" @click="logout" flat round color="white" />
-        </div>
-      </q-card-section> -->
-
-      <q-card-section class="titulos">
-        <q-separator vertical color="blue" />
-        <div class="text-h1 column items-center q-mb-xl">
-          <img src="../assets/logoPerto.png" width="140" />
-        </div>
-
-        <q-space></q-space>
-        <div class="q-pa-sm">
-          <div class="q-mb-md">
-            <!-- <q-btn
-              size="md"
-              tabindex="3"
-              style="background-color: white; color: black"
-              push
-              label="Versão"
-              class="q-mx-sm full-width"
-              @click="AtualizaVersao()"
-              :loading="totemStore.load"
-            ></q-btn> -->
-
-            <q-btn
-              label="VERSÃO"
-              icon="mdi-information-outline"
-              color="secondary"
-              text-color="white"
-              class="q-mb-sm"
-              unelevated
-              rounded
-              size="md"
-              style="width: 100%"
-              @click="AtualizaVersao()"
-              :loading="totemAtualizaStore.loadVersao"
-            >
-              <template v-slot:loading>
-                <q-spinner-gears class="on-left" />
-
-                Atualizando
-              </template>
-            </q-btn>
+  <q-page class="geral flex flex-center">
+    <!-- <q-img src="/imagens/fundo_plus_estacenter.PNG" style="height: 200px" /> -->
+    <!-- <q-card class="my-card shadow-10"> -->
+    <!-- <fundo-tela></fundo-tela> -->
+    <div class="row">
+      <q-card class="my-card col-12 col-md-6 cardBotoes">
+        <!-- Isso ocupa 100% no mobile e 50% no desktop -->
+        <q-card-section class="titulos">
+          <q-separator vertical color="blue" />
+          <div class="text-h1 column items-center q-mb-xl">
+            <img src="../assets/logoPerto.png" width="140" />
           </div>
-          <div class="q-mb-md">
-            <!-- <q-btn
-              size="md"
-              tabindex="3"
-              style="background-color: white; color: black"
-              push
-              label="Audio original"
-              class="q-mx-sm full-width"
-              @click="confirmAudioOriginal()"
-              :loading="totemStore.load"
-            ></q-btn> -->
 
-            <q-btn
-              label="AUDIO ORIGINAL"
-              icon="mdi-volume-high"
-              color="secondary"
-              text-color="white"
-              class="q-mb-sm"
-              unelevated
-              rounded
-              size="md"
-              style="width: 100%"
-              @click="confirmAudioOriginal()"
-            />
-          </div>
-          <div class="q-mb-md">
-            <!-- <q-btn
-              size="md"
-              tabindex="3"
-              style="background-color: white; color: black"
-              push
-              label="Atualiza fundo de tela"
-              class="q-mx-sm full-width"
-              @click="AtualizaFundoTela()"
-              :loading="totemStore.load"
-            ></q-btn> -->
+          <q-space></q-space>
+          <div class="q-pa-sm">
+            <div class="q-mb-md">
+              <q-btn
+                dense
+                label="VERSÃO"
+                icon="mdi-information-outline"
+                class="q-mb-sm"
+                rounded
+                size="md"
+                style="background-color: #f77100"
+                @click="AtualizaVersao()"
+                :loading="totemAtualizaStore.loadVersao"
+                :disable="!totemStore.existeDiretorio"
+              >
+                <template v-slot:loading>
+                  <q-spinner-gears class="on-left" />
 
-            <q-btn
-              label="ATUALIZA FUNDO DE TELA"
-              icon="mdi-image-refresh"
-              color="secondary"
-              text-color="white"
-              class="q-mb-sm"
-              unelevated
-              rounded
-              size="md"
-              style="width: 100%"
-              @click="AtualizaFundoTela()"
-            />
-          </div>
-          <!-- <div>
-            <q-card-section>
-              <q-uploader
-                label="Audio personalizado"
-                accept="audio/*"
-                url="http://localhost:9095/upload"
-                field-name="file"
-                @uploaded="onUploadConcluido"
-                style="max-width: 230px"
-              />
-            </q-card-section>
-          </div> -->
+                  Atualizando
+                </template>
+              </q-btn>
+            </div>
+            <div class="q-mb-md">
+              <q-btn
+                dense
+                label="AUDIO ORIGINAL"
+                icon="mdi-volume-high"
+                style="background-color: #f77100"
+                class="q-mb-sm"
+                unelevated
+                rounded
+                size="md"
+                @click="confirmAudioOriginal()"
+                :disable="!totemStore.existeDiretorio"
+                :loading="totemAtualizaStore.loadAudioOriginal"
+              >
+                <template v-slot:loading>
+                  <q-spinner-gears class="on-left" />
 
-          <div>
+                  Atualizando
+                </template>
+              </q-btn>
+            </div>
+            <div class="q-mb-md">
+              <q-btn
+                dense
+                label="FUNDO DE TELA"
+                icon="mdi-image-refresh"
+                style="background-color: #f77100"
+                class="q-mb-sm"
+                unelevated
+                rounded
+                size="md"
+                @click="AtualizaFundoTela()"
+                :disable="!totemStore.existeDiretorio"
+                :loading="totemAtualizaStore.loadFundoTela"
+              >
+                <template v-slot:loading>
+                  <q-spinner-gears class="on-left" />
+
+                  Atualizando
+                </template>
+              </q-btn>
+            </div>
+
+            <div class="q-mb-md">
+              <q-btn
+                dense
+                label="Restaurar Dump"
+                icon="mdi-database"
+                style="background-color: #f77100"
+                class="q-mb-sm"
+                unelevated
+                rounded
+                size="md"
+                @click="dialogDump = true"
+                :disable="!totemStore.existeDiretorio"
+                :loading="totemAtualizaStore.loadFundoTela"
+              >
+                <template v-slot:loading>
+                  <q-spinner-gears class="on-left" />
+
+                  Atualizando
+                </template>
+              </q-btn>
+            </div>
+
+            <!-- <div>
             <q-card-section>
               <q-uploader
                 label="Restaurar Database"
@@ -127,13 +115,16 @@
                 bg-color="silver"
                 auto-upload
                 hide-upload-progress
+                :disable="!totemStore.existeDiretorio"
               >
               </q-uploader>
             </q-card-section>
+          </div> -->
           </div>
-        </div>
-      </q-card-section>
-      <q-card class="col q-pa-sm my-card" flat bordered>
+        </q-card-section>
+      </q-card>
+
+      <q-card class="my-card col-12 col-md-6 cardInfo">
         <q-card-section>
           <div class="text-h6">Informações do Totem</div>
           <q-separator spaced />
@@ -161,18 +152,6 @@
                 >
               </q-item-section>
             </q-item>
-
-            <!-- <q-item>
-              <q-item-section avatar>
-                <q-icon name="device_hub" />
-              </q-item-section>
-              <q-item-section>
-                <q-item-label>
-                  <strong>Modelo Totem:</strong>
-                  {{ dadosTotem.modeloTotem || "Não identificado" }}
-                </q-item-label>
-              </q-item-section>
-            </q-item> -->
 
             <q-item>
               <q-item-section avatar>
@@ -209,33 +188,110 @@
                 >
               </q-item-section>
             </q-item>
+            <p
+              v-if="totemAtualizaStore.statusDownload?.status === 'processing'"
+              class="text-primary"
+            >
+              <q-icon
+                name="cloud_download"
+                color="primary"
+                size="md"
+                class="q-mr-sm"
+              />
+              Download em andamento... aguarde
+            </p>
+            <q-banner
+              v-if="showBanner"
+              class="bg-green-1 text-green-10 q-mb-md"
+              rounded
+              dense
+            >
+              <template v-slot:avatar>
+                <q-icon name="check_circle" size="md" color="green-10" />
+              </template>
+              <div class="text-weight-medium">
+                Download concluído com sucesso!
+              </div>
+            </q-banner>
           </q-list>
+          <div class="row justify-center q-ma-md">
+            <q-btn
+              label="Finalizar"
+              icon="mdi-logout"
+              color="negative"
+              text-color="white"
+              push
+              dense
+              class="q-ma-md"
+              @click="totemStore.desconectaTotem(), logout()"
+            />
+          </div>
         </q-card-section>
-        <!-- <p>{{ totemAtualizaStore.versaoAtualizada }}</p> -->
-        <div class="row justify-center q-ma-md">
-          <q-btn
-            label="Finalizar"
-            icon="mdi-logout"
-            color="negative"
-            text-color="white"
-            push
-            dense
-            class="q-ma-md"
-            @click="logout"
-          />
-        </div>
       </q-card>
-    </q-card>
+    </div>
+
+    <q-dialog
+      v-model="dialogDump"
+      backdrop-filter="blur(4px)"
+      class="dialog"
+      persistent
+      transition-show="scale"
+      transition-hide="scale"
+    >
+      <q-card style="max-width: 550px; width: 100%">
+        <!-- Botão de fechar no topo direito -->
+        <q-btn
+          flat
+          dense
+          icon="close"
+          round
+          class="absolute-top-right q-ma-sm z-top"
+          v-close-popup
+        />
+
+        <q-card-section>
+          <div class="text-h6">Restaurar Banco de Dados</div>
+          <div class="text-subtitle2 text-grey">
+            Selecione o arquivo <code>.dump</code> para restaurar o banco no
+            totem.
+          </div>
+        </q-card-section>
+
+        <q-card-section class="q-pt-none">
+          <q-uploader
+            class="full-width"
+            label="Selecionar Arquivo"
+            accept=".dump"
+            url="http://localhost:9095/restaurar"
+            field-name="arquivo"
+            :form-fields="[{ name: 'ip', value: totemStore.resposta.ip }]"
+            @uploaded="onUploadConcluido"
+            @failed="onUploadErro"
+            color="primary"
+            text-color="white"
+            auto-upload
+            hide-upload-progress
+            :disable="!totemStore.existeDiretorio"
+          >
+          </q-uploader>
+        </q-card-section>
+
+        <q-card-actions align="right">
+          <q-btn flat label="OK" color="primary" v-close-popup />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
   </q-page>
 </template>
 
 <script setup>
+import FundoTela from "src/components/FundoTela.vue";
 import { useQuasar } from "quasar";
 const $q = useQuasar();
 import { Notify, Dialog } from "quasar";
 import { onMounted } from "vue";
 
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import axios from "axios";
 import { useTotemStore } from "../stores/totemStore";
 import { useTotemAtualizaStore } from "../stores/totemAtualizaStore";
@@ -246,6 +302,21 @@ const router = useRouter(); // ✅ HOOK DO VUE ROUTER
 defineOptions({
   name: "InicioTotem",
 });
+
+const showBanner = ref(false);
+const dialogDump = ref(false);
+
+watch(
+  () => totemAtualizaStore.statusDownload?.status,
+  (newStatus) => {
+    if (newStatus === "done") {
+      showBanner.value = true;
+      setTimeout(() => {
+        showBanner.value = false;
+      }, 3000); // 3 segundos
+    }
+  }
+);
 
 function AtualizaVersao() {
   var valor = null;
@@ -274,50 +345,42 @@ function AtualizaVersao() {
     },
     cancel: true,
     persistent: true,
-  })
-    .onOk(async (data) => {
+  }).onOk(async (data) => {
+    console.log("ddaata" + data);
+    console.log(data.length);
+    console.log(Object.keys(data).length);
+
+    if (data !== null && data !== "") {
       try {
         await totemAtualizaStore.atualizaTotem(data);
         console.log(valor);
 
         Notify.create({
-          message: "Versão atualizada com sucesso!",
+          message: "Versão atualizada!",
           color: "green-7",
           textColor: "white",
           icon: "mdi-check-circle-outline",
           position: "top-right",
-          timeout: 3000,
+          timeout: 2000,
           classes: "glossy shadow-5 rounded-borders text-body2",
         });
         console.log(">>>> OK, received", data);
       } catch (err) {
+        console.log(err);
+
         Notify.create({
-          message: "Erro ao atualizar o áudio!",
+          message: err.message,
           color: "red-7",
           textColor: "white",
           icon: "mdi-alert-circle-outline",
           position: "top-right",
-          timeout: 3000,
+          timeout: 2000,
         });
       }
-    })
-
-    .onCancel(() => {
-      console.log(">>>> Cancel");
-      Notify.create({
-        message: "Erro ao atualizar a versão!",
-        caption: "Verifique a conexão ou tente novamente.",
-        color: "red-5",
-        textColor: "white",
-        icon: "mdi-alert-circle-outline",
-        position: "top-right",
-        timeout: 5000,
-        classes: "shadow-5 rounded-borders text-body2",
-      });
-    })
-    .onDismiss(() => {
-      console.log("I am triggered on both OK and Cancel");
-    });
+    } else {
+      console.log("escolha um valor");
+    }
+  });
 }
 
 function confirmAudioOriginal() {
@@ -326,8 +389,8 @@ function confirmAudioOriginal() {
     message: "Deseja atualizar os audios originais?",
     cancel: true,
     persistent: true,
-  })
-    .onOk(async () => {
+  }).onOk(async () => {
+    try {
       await totemAtualizaStore.atualizaTotemAudioOriginal();
       Notify.create({
         message: "Audio Atualizado!",
@@ -339,16 +402,17 @@ function confirmAudioOriginal() {
         classes: "glossy shadow-5 rounded-borders text-body2",
       });
       // console.log('>>>> OK')
-    })
-    .onOk(() => {
-      // console.log('>>>> second OK catcher')
-    })
-    .onCancel(() => {
-      // console.log('>>>> Cancel')
-    })
-    .onDismiss(() => {
-      // console.log('I am triggered on both OK and Cancel')
-    });
+    } catch (error) {
+      Notify.create({
+        message: error.message,
+        color: "red-7",
+        textColor: "white",
+        icon: "mdi-alert-circle-outline",
+        position: "top-right",
+        timeout: 2000,
+      });
+    }
+  });
 }
 
 function AtualizaFundoTela() {
@@ -374,34 +438,49 @@ function AtualizaFundoTela() {
     },
     cancel: true,
     persistent: true,
-  })
-    .onOk(async (data) => {
-      await totemAtualizaStore.atualizaFundoTela(data);
-      console.log(valor);
-      Notify.create({
-        message: "Imagem fundo atualizado com sucesso!",
-        color: "green-7",
-        textColor: "white",
-        icon: "mdi-check-circle-outline",
-        position: "top-right",
-        timeout: 3000,
-        classes: "glossy shadow-5 rounded-borders text-body2",
-      });
-      console.log(">>>> OK, received", data);
-    })
-    .onCancel(() => {
-      console.log(">>>> Cancel");
-    })
-    .onDismiss(() => {
-      console.log("I am triggered on both OK and Cancel");
-    });
+  }).onOk(async (data) => {
+    if (data !== null && data !== "") {
+      try {
+        await totemAtualizaStore.atualizaFundoTela(data);
+        console.log(valor);
+        Notify.create({
+          message: "Imagem fundo atualizado",
+          color: "green-7",
+          textColor: "white",
+          icon: "mdi-check-circle-outline",
+          position: "top-right",
+          timeout: 3000,
+          classes: "glossy shadow-5 rounded-borders text-body2",
+        });
+        console.log(">>>> OK, received", data);
+      } catch (error) {
+        Notify.create({
+          message: error.message,
+          color: "red-7",
+          textColor: "white",
+          icon: "mdi-alert-circle-outline",
+          position: "top-right",
+          timeout: 2000,
+        });
+      }
+    }
+  });
 }
 
 function onUploadConcluido(info) {
   console.log("Upload concluído:", info);
   Notify.create({
     type: "positive",
-    message: "Arquivo enviado com sucesso!",
+    message: "Restore Database enviado com sucesso!",
+    position: "top",
+  });
+}
+function onUploadErro() {
+  $q.notify({
+    type: "negative",
+    message: "Falha ao enviar o Dump.",
+    caption: "",
+    timeout: 4000,
     position: "top",
   });
 }
@@ -414,66 +493,90 @@ function logout() {
   // localStorage.clear()
 }
 
+function chamaDialogRestauraDump() {}
+
 const count = ref(0);
 onMounted(async () => {
+  // await totemStore.verificaDiretorioPacoteTotem();
   if (totemStore.existeDiretorio) {
-    console.log(" onMonunted Diretorio existe");
-  } else {
-    console.log("onMonunted Diretoro nao existe");
-    var a = await totemAtualizaStore.baixaOracle();
+    console.log("Diretório existe ao carregar.");
 
-    const interval = setInterval(async () => {
-      await totemAtualizaStore.status(a).then(() => {
-        console.log(totemAtualizaStore.statusDownload.status);
-
-        if (
-          totemAtualizaStore.statusDownload?.status === "done" ||
-          totemAtualizaStore.statusDownload?.status === "error"
-        ) {
-          clearInterval(interval);
-          if (totemAtualizaStore.statusDownload.status === "done") {
-            totemStore.listaDiretorioLocal();
-            Notify.create({
-              type: "positive",
-              message: "Download concluido com sucesso!",
-              position: "top",
-              timeout: 1000,
-              textColor: "white",
-            });
-          }
-        }
-      });
-    }, 1000);
+    return;
   }
-  // if (!totemStore.verificaDiretorioPacoteTotem) {
-  //   await totemAtualizaStore.baixaOracle();
-  // } else {
-  //   console.log("Diretorio atualizado ja existe ");
-  // }
-  // alert(totemStore.respostaDiretorioLocal.versaoTinker);
-  // if (!totemStore.resposta) {
-  //   await totemStore.autenticaTotem();
-  // }
+  console.log("Diretório não existe. Iniciando download...");
+
+  var jobId = await totemAtualizaStore.baixaOracle();
+
+  const checkStatus = setInterval(async () => {
+    await totemAtualizaStore.status(jobId).then(() => {
+      console.log(totemAtualizaStore.statusDownload.status);
+      const status = totemAtualizaStore.statusDownload?.status;
+
+      console.log("Status do download:", status);
+
+      if (
+        totemAtualizaStore.statusDownload?.status === "done" ||
+        totemAtualizaStore.statusDownload?.status === "error"
+      ) {
+        clearInterval(checkStatus);
+
+        if (totemAtualizaStore.statusDownload.status === "done") {
+          totemStore.listaDiretorioLocal();
+          // Notify.create({
+          //   type: "positive",
+          //   message: "Download concluido com sucesso!",
+          //   position: "top",
+          //   timeout: 1000,
+          //   textColor: "white",
+          // });
+          totemStore.existeDiretorio = true;
+        }
+      }
+    });
+  }, 1000);
 });
 </script>
 
 <style>
 .my-card {
-  min-width: 300px;
-  border-radius: 5px;
-  /* height: 450px; */
+  /* width: 500px; */
+  /* min-width: 300px; */
+  border-radius: 2px;
+  /* height: 480px; */
+  max-width: 700px;
+}
+.cardInfo {
+  background-color: white;
+}
+.cardBotoes {
+  background-color: #1b2a35;
 }
 .geral {
-  opacity: 1;
+  /* opacity: 0.7; */
   /* background-image: url("/fundo3.png"); */
   font-family: "Kanit";
+  /* background-color: #1b2a35; */
 
   /* background-size: 1466px 1000px; */
+  min-height: 100vh;
+  padding: 16px;
 }
 .titulos {
-  background-color: #1b2a35;
   color: white;
-  font-family: "Kanit";
-  font-size: 16px;
+
+  /* font-size: 25px; */
+  text-align: center;
+}
+.q-btn {
+  height: 30px;
+  width: 200px;
+}
+.q-uploader {
+  /* width: 200px; */
+  /* width: 200px; */
+}
+.dialog {
+  /* height: 500px; */
+  /* background-color: silver; */
 }
 </style>

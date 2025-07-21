@@ -10,20 +10,36 @@ export const useTotemStore = defineStore("totem", {
     respostaDiretorioRemoto: null,
     load: false,
     existeDiretorio: null,
+    backendAtivo: false,
   }),
   getters: {
     doubleCount: (state) => state.counter * 2,
   },
   actions: {
-    logout() {
-      (this.ipTotem = null),
-        (this.conectado = null),
-        (this.resposta = null),
-        (this.respostaDiretorioLocal = null),
-        (this.respostaDiretorioRemoto = null),
-        (this.load = null),
-        (this.existeDiretorio = null);
+    // logout() {
+    //   (this.ipTotem = null),
+    //     (this.conectado = null),
+    //     (this.resposta = null),
+    //     (this.respostaDiretorioLocal = null),
+    //     (this.respostaDiretorioRemoto = null),
+    //     (this.load = null),
+    //     (this.existeDiretorio = null);
+    // },
+
+    async pingBackend() {
+      try {
+        const response = await axios.get("http://localhost:9095/totem/ping");
+        // const response = await axios.get("http://localhost:9095/actuator/health");
+
+        if (response.status === 200) {
+          this.backendAtivo = true;
+        }
+      } catch (error) {
+        this.backendAtivo = false;
+        throw error;
+      }
     },
+
     async autenticaTotem() {
       this.load = true;
       try {
@@ -33,18 +49,14 @@ export const useTotemStore = defineStore("totem", {
             ip: this.ipTotem,
           }
         );
-        console.log(response.data);
+        console.log("autenticaTotem ", response.data);
 
         this.resposta = response.data;
         this.conectado = true;
-        // verificaDiretorioPacoteTotem();
       } catch (error) {
-        console.log("Erro ao conectar: ", error);
         (this.resposta = null), (this.conectado = false);
-        throw error; // ⚠️ Propaga o erro para o `autentica()` capturar
+        throw error.response?.data?.mensagem || "Erro desconhecido";
       } finally {
-        console.log("Finally do autenticaTotem");
-
         this.load = false;
       }
     },
@@ -52,22 +64,15 @@ export const useTotemStore = defineStore("totem", {
       try {
         const response = await axios.get(
           "http://localhost:9095/oracle/verifica_pacote_totem"
-          // {
-          //   ip: this.ipTotem,
-          // }
         );
-        console.log(response.data);
+        console.log("verificaDiretorioPacoteTotem: ", response.data);
 
         this.existeDiretorio = true;
-        // this.conectado = true;
       } catch (error) {
-        console.log("Erro ao conectar: ", error);
-        // (this.resposta = null), (this.conectado = false);
+        console.log("Erro ao verificaDiretorioPacoteTotem: ", error);
         this.existeDiretorio = false;
+        // throw error;
       } finally {
-        console.log("Finally do autenticaTotem");
-
-        // this.load = false;
       }
     },
 
@@ -76,14 +81,17 @@ export const useTotemStore = defineStore("totem", {
         const response = await axios.get(
           "http://localhost:9095/totem/listar_diretorio_local"
         );
-        console.log(response.data);
+        console.log("listaDiretorioLocal ", response.data);
 
         this.respostaDiretorioLocal = response.data;
       } catch (error) {
-        console.log("Erro ao conectar: ", error);
+        console.log(
+          "Erro ao listaDiretorioLocal: ",
+          error.response.data.mensagem
+        );
         this.respostaDiretorioLocal = null;
+        throw error;
       } finally {
-        console.log("Finally do autenticaTotem");
       }
     },
 
@@ -92,18 +100,32 @@ export const useTotemStore = defineStore("totem", {
         const response = await axios.get(
           "http://localhost:9095/totem/listar_Diretorio_remoto"
         );
-        console.log(response.data);
+        console.log("listaDiretorioRemoto ", response.data);
 
         this.respostaDiretorioRemoto = response.data;
       } catch (error) {
-        console.log("Erro ao conectar: ", error);
+        console.log("Erro ao listaDiretorioRemoto: ", error);
         this.respostaDiretorioRemoto = null;
         throw error; // ⚠️ Propaga o erro para o `autentica()` capturar
       } finally {
-        console.log("Finally do autenticaTotem");
       }
     },
-    // http://localhost:8080/totem/listar_diretorio_local
+
+    async desconectaTotem() {
+      try {
+        const response = await axios.get(
+          "http://localhost:9095/totem/desconecta_sessao_ssh"
+        );
+        console.log("desconectaTotem ", response.data);
+
+        this.conectado = response.data;
+      } catch (error) {
+        console.log("DesconectaTotem: ", error);
+        // this.respostaDiretorioRemoto = null;
+        throw error; // ⚠️ Propaga o erro para o `autentica()` capturar
+      } finally {
+      }
+    },
   },
   persist: true, //  ativa persistência automática
 });

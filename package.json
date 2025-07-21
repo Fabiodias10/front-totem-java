@@ -2,7 +2,7 @@
   "name": "totem-java",
   "version": "0.0.1",
   "description": "Atualizador de versao de totem ",
-  "productName": "Quasar App",
+  "productName": "Totem-update",
   "author": "Fabio Dias <84019663+Fabiodias10@users.noreply.github.com>",
   "private": true,
   "scripts": {

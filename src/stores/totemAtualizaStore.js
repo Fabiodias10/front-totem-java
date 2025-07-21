@@ -12,6 +12,8 @@ export const useTotemAtualizaStore = defineStore("totemAtualiza", {
     statusDownload: null,
 
     loadVersao: false,
+    loadAudioOriginal: false,
+    loadFundoTela: false,
   }),
   getters: {
     doubleCount: (state) => state.counter * 2,
@@ -30,25 +32,9 @@ export const useTotemAtualizaStore = defineStore("totemAtualiza", {
       try {
         const response = await axios.post(
           "http://localhost:9095/oracle/iniciar/totem/pacote_atualiza_totem.zip"
-          // {
-          //   ip: this.ipTotem,
-          // }
         );
 
         this.respostaDownload = response.data;
-
-        // const interval = setInterval(() => {
-        //   this.status(response.data.jobId).then(() => {
-        //     console.log(this.statusDownload.status);
-
-        //     if (
-        //       this.statusDownload?.status === "done" ||
-        //       this.statusDownload?.status === "error"
-        //     ) {
-        //       clearInterval(interval);
-        //     }
-        //   });
-        // }, 3500);
         return response.data.jobId;
       } catch (error) {
         console.log("Erro ao conectar: ", error);
@@ -93,6 +79,8 @@ export const useTotemAtualizaStore = defineStore("totemAtualiza", {
         this.versaoAtualizada = null;
         console.log("Erro ao conectar: ", error);
         (this.resposta = null), (this.conectado = false);
+        // Aqui você pode lançar um erro com mais detalhes se desejar
+        throw new Error("Erro ao atualizar versão do totem.");
       } finally {
         // console.log("Finally do autenticaTotem");
         this.versaoAtualizada = "* Versão atualizada: " + versao;
@@ -101,7 +89,7 @@ export const useTotemAtualizaStore = defineStore("totemAtualiza", {
       }
     },
     async atualizaTotemAudioOriginal() {
-      this.load = true;
+      this.loadAudioOriginal = true;
       try {
         const response = await axios.get(
           "http://localhost:9095/totem/update/audio_original"
@@ -115,15 +103,16 @@ export const useTotemAtualizaStore = defineStore("totemAtualiza", {
       } catch (error) {
         console.log("Erro ao conectar: ", error);
         this.respostaAudioOriginal = null;
+        throw new Error("Erro ao atualizar Audios originais");
       } finally {
         console.log("Finally do autenticaTotem");
 
-        this.load = false;
+        this.loadAudioOriginal = false;
       }
     },
 
     async atualizaFundoTela(imagem) {
-      this.loadVersao = true;
+      this.loadFundoTela = true;
       try {
         const response = await axios.get(
           "http://localhost:9095/totem/update/fundo/" + imagem
@@ -138,11 +127,12 @@ export const useTotemAtualizaStore = defineStore("totemAtualiza", {
         // this.versaoAtualizada = null;
         console.log("Erro ao conectar: ", error);
         // (this.resposta = null), (this.conectado = false);
+        throw new Error("Erro ao atualizar fundo de tela");
       } finally {
         // console.log("Finally do autenticaTotem");
         // this.versaoAtualizada = "* Versão atualizada: " + versao;
 
-        this.loadVersao = false;
+        this.loadFundoTela = false;
       }
     },
   },

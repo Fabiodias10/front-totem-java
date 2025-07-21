@@ -32,11 +32,11 @@
       <q-card-actions vertical class="q-mx-xl q-mb-md">
         <q-btn
           size="md"
-          tabindex="3"
+          tabindex="2"
           push
           icon="check"
           label="Conectar"
-          class="q-mx-sm full-width"
+          class="q-mx-sm full-width text-weight-bold"
           @click="autentica()"
           :loading="totemStore.load"
         >
@@ -45,6 +45,20 @@
           </template>
         </q-btn>
       </q-card-actions>
+      <div class="status-indicator q-ma-sm">
+        <q-icon
+          :name="backendAtivo ? 'check_circle' : 'cancel'"
+          :color="backendAtivo ? 'positive' : 'negative'"
+          size="sm"
+        />
+        <span :class="backendAtivo ? 'text-positive' : 'text-negative'">
+          {{
+            backendAtivo
+              ? " Conectado ao backend"
+              : " Não foi possível conectar ao backend"
+          }}
+        </span>
+      </div>
     </q-card>
   </q-page>
 </template>
@@ -52,7 +66,7 @@
 <script setup>
 import { Notify } from "quasar";
 
-import { ref } from "vue";
+import { onMounted, ref, computed } from "vue";
 import axios from "axios";
 import { useTotemStore } from "../stores/totemStore";
 import { useTotemAtualizaStore } from "../stores/totemAtualizaStore";
@@ -68,27 +82,31 @@ defineOptions({
 
 const count = ref(0);
 const ipTotem = ref(totemStore.ipTotem);
+// const backendAtivo = ref(totemStore.backendAtivo);
+const backendAtivo = computed(() => totemStore.backendAtivo);
 
 // const load = ref(false);
 
 async function autentica() {
+  await totemStore.pingBackend();
   try {
     await totemStore.autenticaTotem();
-  } catch (e) {
+  } catch (erro) {
     Notify.create({
       type: "negative",
-      message: "Não foi possivel conectar no totem",
+      message: erro,
+      caption: "Verifique se o totem está ligado",
       position: "top",
       timeout: 2000,
       textColor: "white",
     });
-    console.error("Falha na autenticação do totem:", e);
+    console.error("Falha na autenticação do totem:", erro);
     return; // ⚠️ Interrompe aqui se falhar
   }
 
   await totemStore.listaDiretorioRemoto();
 
-  await totemStore.verificaDiretorioPacoteTotem();
+  await totemStore.verificaDiretorioPacoteTotem(); //não tratei esse metodo la no totemStore com throw pq nao quero parar execucao, só quero verificar mesmo
 
   if (totemStore.existeDiretorio) {
     await totemStore.listaDiretorioLocal();
@@ -100,22 +118,27 @@ async function autentica() {
     Notify.create({
       type: "positive",
       message: "Totem conectado com sucesso!",
+      // caption: "",
       position: "top",
       timeout: 1000,
-      textColor: "white",
+      textColor: "black",
     });
     setTimeout(() => {
       router.push("/totem");
     }, 100);
   }
 }
+onMounted(async () => {
+  await totemStore.pingBackend();
+  console.log("onmounted indexpage");
+});
 </script>
 
 <style scoped>
 .my-card {
-  min-width: 340px;
+  width: 330px;
   border-radius: 10px;
-  height: 350px;
+  height: 400px;
 }
 
 .geral {
@@ -134,8 +157,12 @@ async function autentica() {
 .q-btn {
   font-family: "Kanit";
   font-size: 14px;
-  color: #1b2a35;
-  background-color: #53b7e8;
+  /* color: #1b2a35; */
+
+  color: black;
+
+  /* background-color: #53b7e8; */
+  background-color: #ff7705;
 }
 
 .q-input {

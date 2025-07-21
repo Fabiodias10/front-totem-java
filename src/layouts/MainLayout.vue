@@ -11,9 +11,9 @@
           @click="toggleLeftDrawer"
         /> -->
 
-        <q-toolbar-title> Atualiza Versao Totem </q-toolbar-title>
+        <q-toolbar-title> Atualiza Totem </q-toolbar-title>
 
-        <div>v 1.0.1</div>
+        <div>v 1.0.2</div>
       </q-toolbar>
     </q-header>
 
@@ -94,3 +94,8 @@ function toggleLeftDrawer() {
   leftDrawerOpen.value = !leftDrawerOpen.value;
 }
 </script>
+<style>
+.q-header {
+  background-color: #1b2a35;
+}
+</style>
