@@ -1,5 +1,8 @@
 import { defineStore } from "pinia";
 import axios from "axios";
+import { useImagemStore } from "../stores/imagemStore";
+
+const imagemStore = useImagemStore();
 
 export const useTotemAtualizaStore = defineStore("totemAtualiza", {
   state: () => ({
@@ -112,7 +115,7 @@ export const useTotemAtualizaStore = defineStore("totemAtualiza", {
     },
 
     async atualizaFundoTela(imagem) {
-      this.loadFundoTela = true;
+      // this.loadFundoTela = true;
       try {
         const response = await axios.get(
           "http://localhost:9095/totem/update/fundo/" + imagem
@@ -131,8 +134,8 @@ export const useTotemAtualizaStore = defineStore("totemAtualiza", {
       } finally {
         // console.log("Finally do autenticaTotem");
         // this.versaoAtualizada = "* Versão atualizada: " + versao;
-
-        this.loadFundoTela = false;
+        imagemStore.dialogAtivo = false;
+        // this.loadFundoTela = false;
       }
     },
   },

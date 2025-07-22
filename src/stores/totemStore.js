@@ -60,6 +60,20 @@ export const useTotemStore = defineStore("totem", {
         this.load = false;
       }
     },
+
+    async carregaInfoTotem() {
+      try {
+        const response = await axios.get(
+          "http://localhost:9095/totem/carregaInfoTotem"
+        );
+
+        this.resposta = response.data;
+      } catch (error) {
+        this.resposta = null;
+        throw error.response?.data?.mensagem || "Erro desconhecido";
+      } finally {
+      }
+    },
     async verificaDiretorioPacoteTotem() {
       try {
         const response = await axios.get(

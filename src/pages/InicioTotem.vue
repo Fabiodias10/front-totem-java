@@ -2,14 +2,14 @@
   <q-page class="geral flex flex-center">
     <!-- <q-img src="/imagens/fundo_plus_estacenter.PNG" style="height: 200px" /> -->
     <!-- <q-card class="my-card shadow-10"> -->
-    <!-- <fundo-tela></fundo-tela> -->
-    <div class="row">
-      <q-card class="my-card col-12 col-md-6 cardBotoes">
+
+    <div class="row teste">
+      <q-card class="my-card col-12 col-md-5 cardBotoes">
         <!-- Isso ocupa 100% no mobile e 50% no desktop -->
         <q-card-section class="titulos">
           <q-separator vertical color="blue" />
-          <div class="text-h1 column items-center q-mb-xl">
-            <img src="../assets/logoPerto.png" width="140" />
+          <div class="text-h1 column items-center q-mb-md">
+            <img src="../assets/logoPerto.png" width="120" />
           </div>
 
           <q-space></q-space>
@@ -65,10 +65,10 @@
                 unelevated
                 rounded
                 size="md"
-                @click="AtualizaFundoTela()"
+                @click="atualizaNovoFundo()"
                 :disable="!totemStore.existeDiretorio"
-                :loading="totemAtualizaStore.loadFundoTela"
               >
+                <!-- :loading="totemAtualizaStore.loadFundoTela" -->
                 <template v-slot:loading>
                   <q-spinner-gears class="on-left" />
 
@@ -89,8 +89,8 @@
                 size="md"
                 @click="dialogDump = true"
                 :disable="!totemStore.existeDiretorio"
-                :loading="totemAtualizaStore.loadFundoTela"
               >
+                <!-- :loading="totemAtualizaStore.loadFundoTela" -->
                 <template v-slot:loading>
                   <q-spinner-gears class="on-left" />
 
@@ -124,7 +124,7 @@
         </q-card-section>
       </q-card>
 
-      <q-card class="my-card col-12 col-md-6 cardInfo">
+      <q-card class="my-card col-12 col-md-7 cardInfo">
         <q-card-section>
           <div class="text-h6">Informações do Totem</div>
           <q-separator spaced />
@@ -165,7 +165,7 @@
               </q-item-section>
             </q-item>
 
-            <q-item>
+            <!-- <q-item>
               <q-item-section avatar>
                 <q-icon name="hourglass_empty" />
               </q-item-section>
@@ -173,6 +173,18 @@
                 <q-item-label
                   ><strong>Uptime:</strong>
                   {{ totemStore.resposta.uptime }}</q-item-label
+                >
+              </q-item-section>
+            </q-item> -->
+
+            <q-item>
+              <q-item-section avatar>
+                <q-icon name="devices" />
+              </q-item-section>
+              <q-item-section>
+                <q-item-label
+                  ><strong>Nome:</strong>
+                  {{ totemStore.resposta.nomeEquipamento }}</q-item-label
                 >
               </q-item-section>
             </q-item>
@@ -188,31 +200,6 @@
                 >
               </q-item-section>
             </q-item>
-            <p
-              v-if="totemAtualizaStore.statusDownload?.status === 'processing'"
-              class="text-primary"
-            >
-              <q-icon
-                name="cloud_download"
-                color="primary"
-                size="md"
-                class="q-mr-sm"
-              />
-              Download em andamento... aguarde
-            </p>
-            <q-banner
-              v-if="showBanner"
-              class="bg-green-1 text-green-10 q-mb-md"
-              rounded
-              dense
-            >
-              <template v-slot:avatar>
-                <q-icon name="check_circle" size="md" color="green-10" />
-              </template>
-              <div class="text-weight-medium">
-                Download concluído com sucesso!
-              </div>
-            </q-banner>
           </q-list>
           <div class="row justify-center q-ma-md">
             <q-btn
@@ -226,6 +213,32 @@
               @click="totemStore.desconectaTotem(), logout()"
             />
           </div>
+
+          <p
+            v-if="totemAtualizaStore.statusDownload?.status === 'processing'"
+            class="text-primary"
+          >
+            <q-icon
+              name="cloud_download"
+              color="primary"
+              size="md"
+              class="q-mr-sm"
+            />
+            Download em andamento... aguarde
+          </p>
+          <q-banner
+            v-if="showBanner"
+            class="bg-green-1 text-green-10 q-mb-md"
+            rounded
+            dense
+          >
+            <template v-slot:avatar>
+              <q-icon name="check_circle" size="md" color="green-10" />
+            </template>
+            <div class="text-weight-medium">
+              Download concluído com sucesso!
+            </div>
+          </q-banner>
         </q-card-section>
       </q-card>
     </div>
@@ -281,6 +294,8 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
+
+    <fundo-tela v-if="imagemStore.dialogAtivo"></fundo-tela>
   </q-page>
 </template>
 
@@ -295,8 +310,12 @@ import { ref, watch } from "vue";
 import axios from "axios";
 import { useTotemStore } from "../stores/totemStore";
 import { useTotemAtualizaStore } from "../stores/totemAtualizaStore";
+import { useImagemStore } from "../stores/imagemStore";
+const imagemStore = useImagemStore();
+
 const totemStore = useTotemStore();
 const totemAtualizaStore = useTotemAtualizaStore();
+const carregaDialogFundoTela = ref(imagemStore.dialogAtivo);
 import { useRouter } from "vue-router"; // ✅ IMPORTANTE
 const router = useRouter(); // ✅ HOOK DO VUE ROUTER
 defineOptions({
@@ -354,6 +373,8 @@ function AtualizaVersao() {
       try {
         await totemAtualizaStore.atualizaTotem(data);
         console.log(valor);
+
+        await totemStore.carregaInfoTotem();
 
         Notify.create({
           message: "Versão atualizada!",
@@ -415,6 +436,10 @@ function confirmAudioOriginal() {
   });
 }
 
+async function atualizaNovoFundo() {
+  imagemStore.dialogAtivo = true;
+}
+
 function AtualizaFundoTela() {
   var valor = null;
 
@@ -469,6 +494,7 @@ function AtualizaFundoTela() {
 
 function onUploadConcluido(info) {
   console.log("Upload concluído:", info);
+  totemStore.carregaInfoTotem();
   Notify.create({
     type: "positive",
     message: "Restore Database enviado com sucesso!",
@@ -533,7 +559,7 @@ onMounted(async () => {
         }
       }
     });
-  }, 1000);
+  }, 3000);
 });
 </script>
 
@@ -542,14 +568,17 @@ onMounted(async () => {
   /* width: 500px; */
   /* min-width: 300px; */
   border-radius: 2px;
-  /* height: 480px; */
-  max-width: 700px;
+  /* height: 1080px; */
+  /* max-width: 800px; */
+
+  /* height: fit-content; */
 }
 .cardInfo {
   background-color: white;
 }
 .cardBotoes {
   background-color: #1b2a35;
+  /* width: 500px; */
 }
 .geral {
   /* opacity: 0.7; */
@@ -558,7 +587,9 @@ onMounted(async () => {
   /* background-color: #1b2a35; */
 
   /* background-size: 1466px 1000px; */
-  min-height: 100vh;
+  /* min-height: 100vh; */
+  /* height: 900px; */
+  /* width: 900px; */
   padding: 16px;
 }
 .titulos {
@@ -569,7 +600,7 @@ onMounted(async () => {
 }
 .q-btn {
   height: 30px;
-  width: 200px;
+  width: 170px;
 }
 .q-uploader {
   /* width: 200px; */
@@ -578,5 +609,9 @@ onMounted(async () => {
 .dialog {
   /* height: 500px; */
   /* background-color: silver; */
+}
+.teste {
+  /* width: fit-content; */
+  height: 470px;
 }
 </style>

@@ -13,7 +13,7 @@
 
         <q-toolbar-title> Atualiza Totem </q-toolbar-title>
 
-        <div>v 1.0.2</div>
+        <div>v 1.2.5</div>
       </q-toolbar>
     </q-header>
 
