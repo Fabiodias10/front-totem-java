@@ -38,6 +38,14 @@
           <q-card-actions align="right" class="q-mt-md">
             <q-btn
               flat
+              label="Cancelar"
+              color="negative"
+              @click="imagemStore.dialogAtivo = false"
+              v-close-popup
+            />
+
+            <q-btn
+              flat
               label="OK"
               color="primary"
               @click="confirmarSelecao"
@@ -51,6 +59,7 @@
 </template>
 
 <script setup>
+import { Notify } from "quasar";
 import { ref } from "vue";
 import { useTotemStore } from "../stores/totemStore";
 import { useTotemAtualizaStore } from "../stores/totemAtualizaStore";
@@ -67,7 +76,18 @@ async function confirmarSelecao() {
   imagemStore.setImagem(imagemSelecionada.value);
 
   if (imagemSelecionada.value != null) {
-    await totemAtualizaStore.atualizaFundoTela(imagemSelecionada.value);
+    try {
+      await totemAtualizaStore.atualizaFundoTela(imagemSelecionada.value);
+    } catch (error) {
+      Notify.create({
+        message: error.message,
+        color: "red-7",
+        textColor: "white",
+        icon: "mdi-alert-circle-outline",
+        position: "top-right",
+        timeout: 2000,
+      });
+    }
   } else {
     console.log("nehuma imagem selecionada");
     imagemStore.dialogAtivo = false;
@@ -77,10 +97,10 @@ async function confirmarSelecao() {
 const imagens = [
   "fundo_lite_estacenter.png",
   "fundo_lite_indigo.png",
-  "fundo_lite_next_768_1024.png",
+  "fundo_lite_next_768_1024.PNG",
   "fundo_plus_estacenter.PNG",
   "fundo_plus_indigo.png",
-  "fundo_plus_next_1280_720.png",
+  "fundo_plus_next_1280_720.PNG",
 ];
 </script>
 

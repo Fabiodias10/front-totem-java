@@ -1,7 +1,7 @@
 <template>
   <q-page class="geral col-12 column self-center items-center justify-center">
     <!-- <h1>Fabio</h1> -->
-    <q-card class="my-card shadow-3">
+    <q-card class="my-card shadow-15">
       <q-card-section class="titulos">
         <q-separator vertical color="blue" />
         <div class="text-h1 column items-center">
@@ -45,7 +45,7 @@
           </template>
         </q-btn>
       </q-card-actions>
-      <div class="status-indicator q-ma-sm">
+      <div class="status-indicator q-ma-sm flex flex-center">
         <q-icon
           :name="backendAtivo ? 'check_circle' : 'cancel'"
           :color="backendAtivo ? 'positive' : 'negative'"
@@ -101,7 +101,7 @@ async function autentica() {
       textColor: "white",
     });
     console.error("Falha na autenticação do totem:", erro);
-    return; // ⚠️ Interrompe aqui se falhar
+    // return; // ⚠️ Interrompe aqui se falhar
   }
 
   await totemStore.listaDiretorioRemoto();
@@ -115,14 +115,14 @@ async function autentica() {
   // console.log(totemStore.respostaDiretorioLocal.versaoTinker);
 
   if (totemStore.conectado) {
-    Notify.create({
-      type: "positive",
-      message: "Totem conectado com sucesso!",
-      // caption: "",
-      position: "top",
-      timeout: 1000,
-      textColor: "black",
-    });
+    // Notify.create({
+    //   type: "positive",
+    //   message: "Totem conectado com sucesso!",
+    //   // caption: "",
+    //   position: "top",
+    //   timeout: 1000,
+    //   textColor: "black",
+    // });
     setTimeout(() => {
       router.push("/totem");
     }, 100);
@@ -143,10 +143,10 @@ onMounted(async () => {
 
 .geral {
   opacity: 1;
-  /* background-image: url("/fundo3.png"); */
+  background-image: url("/fundo3.png");
   font-family: "Kanit";
 
-  /* background-size: 1466px 1000px; */
+  background-size: 1466px 1000px;
 }
 
 .versao {

@@ -115,7 +115,7 @@ export const useTotemAtualizaStore = defineStore("totemAtualiza", {
     },
 
     async atualizaFundoTela(imagem) {
-      // this.loadFundoTela = true;
+      this.loadFundoTela = true;
       try {
         const response = await axios.get(
           "http://localhost:9095/totem/update/fundo/" + imagem
@@ -125,17 +125,18 @@ export const useTotemAtualizaStore = defineStore("totemAtualiza", {
         );
         console.log(response.data);
 
-        this.resposta = response.data;
+        this.fundoTelaAtualizado = true;
       } catch (error) {
         // this.versaoAtualizada = null;
         console.log("Erro ao conectar: ", error);
         // (this.resposta = null), (this.conectado = false);
+        this.fundoTelaAtualizado = false;
         throw new Error("Erro ao atualizar fundo de tela");
       } finally {
         // console.log("Finally do autenticaTotem");
         // this.versaoAtualizada = "* Versão atualizada: " + versao;
         imagemStore.dialogAtivo = false;
-        // this.loadFundoTela = false;
+        this.loadFundoTela = false;
       }
     },
   },

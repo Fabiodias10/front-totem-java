@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import axios from "axios";
+import { Notify } from "quasar";
 
 export const useTotemStore = defineStore("totem", {
   state: () => ({
@@ -11,6 +12,9 @@ export const useTotemStore = defineStore("totem", {
     load: false,
     existeDiretorio: null,
     backendAtivo: false,
+    statusConexaoSessaoSSH: null,
+    StatusDump: null,
+    loadDump: false,
   }),
   getters: {
     doubleCount: (state) => state.counter * 2,
@@ -87,6 +91,37 @@ export const useTotemStore = defineStore("totem", {
         this.existeDiretorio = false;
         // throw error;
       } finally {
+      }
+    },
+
+    async statusConexaoSsh() {
+      try {
+        const response = await axios.get(
+          "http://localhost:9095/totem/status_conexao_ssh"
+        );
+        this.statusConexaoSessaoSSH = true;
+        console.log("statusConexaoSSH: ", response.data);
+      } catch (error) {
+        console.log("statusConexaoSSH", error);
+        this.statusConexaoSessaoSSH = false;
+        throw error;
+      } finally {
+      }
+    },
+
+    async dumpTotem() {
+      this.loadDump = true;
+      try {
+        const response = await axios.get("http://localhost:9095/dump");
+        console.log("dumpTotem: ", response.data);
+
+        this.StatusDump = response.data;
+      } catch (error) {
+        console.log("dumpTotem", error);
+        this.StatusDump = null;
+        throw new Error("Erro ao realiza Dump");
+      } finally {
+        this.loadDump = false;
       }
     },
 
