@@ -10,7 +10,7 @@
       style="width: 100%"
     >
       <div class="col-xs-12 col-sm-5 col-md-4 col-lg-3">
-        <q-card class="my-card cardBotoes shadow-10">
+        <q-card class="my-card cardBotoes shadow-3">
           <!-- Isso ocupa 100% no mobile e 50% no desktop -->
           <div class="titulos">
             <!-- <q-separator vertical color="blue" /> -->
@@ -32,12 +32,12 @@
                 <div>
                   <q-btn
                     dense
-                    label="VERSÃO"
+                    label="Atualiza VERSÃO"
                     icon="mdi-application-braces-outline"
                     rounded
                     push
                     size="md"
-                    style="background-color: #0f172a; color: silver"
+                    style="background-color: #0f909a; color: white"
                     :style="{ width: btnWidth }"
                     @click="AtualizaVersao()"
                     :loading="totemAtualizaStore.loadVersao"
@@ -55,7 +55,7 @@
                     dense
                     label="AUDIO ORIGINAL"
                     icon="mdi-volume-high"
-                    style="background-color: #0f172a; color: silver"
+                    style="background-color: #0f909a; color: white"
                     :style="{ width: btnWidth }"
                     class=""
                     rounded
@@ -75,9 +75,9 @@
                 <div>
                   <q-btn
                     dense
-                    label="FUNDO DE TELA"
+                    label="FUNDO Padrão"
                     icon="mdi-image-refresh"
-                    style="background-color: #0f172a; color: silver"
+                    style="background-color: #0f909a; color: white"
                     :style="{ width: btnWidth }"
                     class=""
                     unelevated
@@ -107,7 +107,7 @@
                     dense
                     label="Gerar Dump"
                     icon="mdi-database-export"
-                    style="background-color: #3b82f6"
+                    style="background-color: #395f7a"
                     :style="{ width: btnWidth }"
                     class=""
                     unelevated
@@ -123,6 +123,12 @@
 
                       Atualizando
                     </template>
+                    <template v-slot:icon>
+                      <q-icon
+                        name="mdi-database-export"
+                        style="font-size: 16px"
+                      />
+                    </template>
                   </q-btn>
                 </div>
                 <div>
@@ -130,7 +136,7 @@
                     dense
                     label="Restaurar Dump"
                     icon="mdi-database-import"
-                    style="background-color: #3b82f6"
+                    style="background-color: #395f7a"
                     :style="{ width: btnWidth }"
                     class="q-mb-sm"
                     unelevated
@@ -163,7 +169,7 @@
                     label="Audio Entrada"
                     icon="mdi-volume-high
                 "
-                    style="background-color: #f77100"
+                    style="background-color: #176399"
                     :style="{ width: btnWidth }"
                     class=""
                     unelevated
@@ -187,7 +193,7 @@
                     dense
                     label="Audio Saida"
                     icon="mdi-volume-high"
-                    style="background-color: #f77100"
+                    style="background-color: #176399"
                     :style="{ width: btnWidth }"
                     class=""
                     unelevated
@@ -209,18 +215,18 @@
                 <div>
                   <q-btn
                     dense
-                    label="Fundo"
+                    label="Fundo Tela"
                     icon="mdi-image-edit-outline"
-                    style="background-color: #f77100"
+                    style="background-color: #176399"
                     :style="{ width: btnWidth }"
                     class="q-mb-sm"
                     unelevated
                     rounded
                     push
                     size="md"
-                    @click="dialogMidiasaida = true"
-                    :disable="true"
+                    @click="dialogMidiaFundoPersonalizado = true"
                   >
+                    <!-- :disable="true" -->
                     <!-- :disable="!totemStore.existeDiretorio" -->
                     <!-- :loading="totemAtualizaStore.loadFundoTela" -->
                     <template v-slot:loading>
@@ -237,9 +243,11 @@
       </div>
 
       <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
-        <q-card class="my-card cardInfo shadow-10">
+        <q-card class="my-card cardInfo shadow-3">
           <q-card-section>
-            <div class="text-h6">Informações do Totem</div>
+            <div class="text-h6 row justify-center items-center">
+              Informações do Totem
+            </div>
             <q-separator spaced />
             <q-list>
               <q-item>
@@ -280,6 +288,18 @@
 
               <q-item>
                 <q-item-section avatar>
+                  <q-icon name="update" />
+                </q-item-section>
+                <q-item-section>
+                  <q-item-label
+                    ><strong>Uptime:</strong>
+                    {{ totemStore.resposta.uptime }}</q-item-label
+                  >
+                </q-item-section>
+              </q-item>
+
+              <q-item>
+                <q-item-section avatar>
                   <q-icon name="devices" />
                 </q-item-section>
                 <q-item-section>
@@ -292,7 +312,7 @@
 
               <q-item>
                 <q-item-section avatar>
-                  <q-icon name="update" />
+                  <q-icon name="extension" />
                 </q-item-section>
                 <q-item-section>
                   <q-item-label
@@ -323,19 +343,20 @@
                 @click="totemStore.desconectaTotem(), logout()"
               />
             </div>
-
-            <p
+            <q-banner
               v-if="totemAtualizaStore.statusDownload?.status === 'processing'"
-              class="text-primary"
+              class="bg-blue-1 text-blue-10 q-mb-md"
+              rounded
+              dense
             >
-              <q-icon
-                name="cloud_download"
-                color="primary"
-                size="md"
-                class="q-mr-sm"
-              />
-              Download em andamento... aguarde
-            </p>
+              <template v-slot:avatar>
+                <q-icon name="cloud_download" color="blue-10" size="md" />
+              </template>
+              <div class="text-weight-medium">
+                Download em andamento... aguarde
+              </div>
+            </q-banner>
+
             <q-banner
               v-if="showBanner"
               class="bg-green-1 text-green-10 q-mb-md"
@@ -385,7 +406,7 @@
             class="full-width"
             label="Audio Totem Saida"
             accept=".mp3"
-            url="http://localhost:9095/MidiaSaida"
+            url="http://192.168.0.155:9095/MidiaSaida"
             field-name="arquivo"
             :form-fields="[{ name: 'ip', value: totemStore.resposta.ip }]"
             @uploaded="onUploadConcluido"
@@ -436,7 +457,7 @@
             class="full-width"
             label="Audio Totem Entrada"
             accept=".mp3"
-            url="http://localhost:9095/MidiaEntrada"
+            url="http://192.168.0.155:9095/MidiaEntrada"
             field-name="arquivo"
             :form-fields="[{ name: 'ip', value: totemStore.resposta.ip }]"
             @uploaded="onUploadConcluido"
@@ -488,9 +509,59 @@
             class="full-width"
             label="Arquivo dump"
             accept=".dump"
-            url="http://localhost:9095/restaurar"
+            url="http://192.168.0.155:9095/restaurar"
             field-name="arquivo"
             :form-fields="[{ name: 'ip', value: totemStore.resposta.ip }]"
+            @uploaded="onUploadConcluido"
+            @failed="onUploadErro"
+            color="primary"
+            text-color="white"
+            auto-upload
+            hide-upload-progress
+            :disable="!totemStore.existeDiretorio"
+          >
+          </q-uploader>
+        </q-card-section>
+
+        <q-card-actions align="right">
+          <q-btn flat label="OK" color="primary" v-close-popup />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+
+    <q-dialog
+      v-model="dialogMidiaFundoPersonalizado"
+      backdrop-filter="blur(4px)"
+      class="dialog"
+      persistent
+      transition-show="scale"
+      transition-hide="scale"
+    >
+      <q-card style="max-width: 350px; width: 100%">
+        <!-- Botão de fechar no topo direito -->
+        <q-btn
+          flat
+          dense
+          icon="close"
+          round
+          class="absolute-top-right q-ma-sm z-top"
+          v-close-popup
+        />
+
+        <q-card-section>
+          <!-- <div class="text-h6">Selecione audio para Totem de Saida</div> -->
+          <div class="text-subtitle2 text-grey">
+            Selecione o fundo personalizado <code></code>
+          </div>
+        </q-card-section>
+
+        <q-card-section class="q-pt-none">
+          <q-uploader
+            class="full-width"
+            label="Fundo Totem Personalizado"
+            accept="image/*"
+            url="http://192.168.0.155:9095/FundoPersonalizado"
+            field-name="arquivo"
             @uploaded="onUploadConcluido"
             @failed="onUploadErro"
             color="primary"
@@ -554,6 +625,7 @@ const showBanner = ref(false);
 const dialogDump = ref(false);
 const dialogMidiaEntrada = ref(false);
 const dialogMidiasaida = ref(false);
+const dialogMidiaFundoPersonalizado = ref(false);
 
 watch(
   () => totemAtualizaStore.statusDownload?.status,
@@ -760,14 +832,14 @@ function onUploadConcluido(info) {
   totemStore.carregaInfoTotem();
   Notify.create({
     type: "positive",
-    message: "Restore Database enviado com sucesso!",
+    message: "Arquivo enviado com sucesso!",
     position: "top",
   });
 }
 function onUploadErro() {
   $q.notify({
     type: "negative",
-    message: "Falha ao enviar o Dump.",
+    message: "Falha ao enviar.",
     caption: "",
     timeout: 4000,
     position: "top",
@@ -805,7 +877,7 @@ onMounted(async () => {
       clearInterval(intervalo);
       totemStore.desconectaTotem();
     }
-  }, 5000);
+  }, 10000);
 
   // await totemStore.verificaDiretorioPacoteTotem();
   if (totemStore.existeDiretorio) {
@@ -865,7 +937,7 @@ onMounted(async () => {
   /* height: fit-content; */
 }
 .cardInfo {
-  background-color: #253258;
+  background-color: #1b2a35e8;
   color: white;
   font-family: "Inter", sans-serif;
   border-radius: 0;
@@ -876,19 +948,26 @@ onMounted(async () => {
 }
 .cardBotoes {
   /* background-color: #0f172a; */
-  background-color: rgb(95, 108, 128);
+  /* background-color: #4986b3; */
+  background-color: #1b2a3573;
   border-radius: 0;
   /* min-width: 250px; */
   height: 530px;
+  /* font-size: small; */
   /* width: 100%; */
+}
+.q-btn {
+  /* text-align: end; */
 }
 .geral {
   /* opacity: 0.7; */
   background-image: url("/fundo3.png");
   /* font-family: "Kanit"; */
-  /* background-color: #1b2a35; */
+  /* background-color: #176399; */
 
   background-size: 1466px 1000px;
+  /* font-family: sans-serif; */
+  /* text-align: start; */
   /* min-height: 100vh; */
   /* height: 900px; */
   /* width: 900px; */
@@ -915,14 +994,14 @@ onMounted(async () => {
 .teste {
   /* max-width: 660px;
   max-height: 550px; */
-  border: solid rgb(145, 163, 224) 3px;
+  border: solid rgb(145, 163, 224) 1px;
   border-radius: 2px;
 }
 .cards {
   /* border: solid black 1px; */
-  border-radius: 15px;
+  border-radius: 10px;
 
-  background-color: rgb(239, 246, 247);
+  background-color: rgb(255, 255, 255);
 }
 .containner {
   /* max-width: 850px; */

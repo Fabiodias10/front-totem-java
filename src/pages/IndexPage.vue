@@ -8,7 +8,7 @@
           <!-- <img src="../assets/logoPerto.png" width="140" /> -->
           <img src="../assets/wps-perto.jpg" width="250" />
         </div>
-        <div class="column items-center">Atualiza-Totem</div>
+        <div class="column items-center q-pt-sm">Atualiza-Totem</div>
       </q-card-section>
 
       <div class="row">
@@ -135,17 +135,19 @@ onMounted(async () => {
 </script>
 
 <style scoped>
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap");
+
 .my-card {
   width: 330px;
-  border-radius: 10px;
-  height: 400px;
+  border-radius: 7px;
+  height: 410px;
 }
 
 .geral {
   opacity: 1;
   background-image: url("/fundo3.png");
-  font-family: "Kanit";
-
+  /* font-family: "Kanit"; */
+  font-family: "Inter", sans-serif;
   background-size: 1466px 1000px;
 }
 
@@ -155,7 +157,6 @@ onMounted(async () => {
 }
 
 .q-btn {
-  font-family: "Kanit";
   font-size: 14px;
   /* color: #1b2a35; */
 
@@ -172,7 +173,7 @@ onMounted(async () => {
 .titulos {
   background-color: #1b2a35;
   color: white;
-  font-family: "Kanit";
+  /* font-family: "Kanit"; */
   font-size: 16px;
 }
 </style>

@@ -1,7 +1,8 @@
 <template>
   <q-page class="q-pa-md">
-    <q-card class="geralFundoTela">
+    <q-card>
       <q-dialog
+        class="geralFundoTela"
         v-model="dialogFundoTela"
         backdrop-filter="blur(4px)"
         persistent
@@ -10,22 +11,22 @@
       >
         <q-card class="q-pa-md">
           <q-card-section>
-            <div class="text-h6">Escolha o fundo de tela</div>
+            <!-- <div class="text-h6">Selecione o fundo de tela</div> -->
             <div class="text-subtitle2 text-grey">
-              <!-- Selecione o arquivo <code>.dump</code> para restaurar o banco no
-            totem. -->
+              Selecione o fundo de tela
             </div>
           </q-card-section>
           <div class="row q-gutter-md justify-center q-mt-sm">
             <q-card
               v-for="imagem in imagens"
               :key="imagem"
+              class="cardImagem"
               bordered
-              class="col-xs-6 col-sm-4 col-md-3 col-lg-2 cardImagem"
               :class="{ 'selected-card': imagem === imagemSelecionada }"
               style="cursor: pointer; transition: 0.3s"
               @click="imagemSelecionada = imagem"
             >
+              <!-- class="col-xs-6 col-sm-4 col-md-3 col-lg-2 cardImagem" -->
               <q-img :src="`/imagens/${imagem}`" spinner-color="primary" />
 
               <!-- <q-card-section class="text-center q-pa-xs">
@@ -97,36 +98,38 @@ async function confirmarSelecao() {
 const imagens = [
   "fundo_lite_estacenter.png",
   "fundo_lite_indigo.png",
+  "fundo_lite_estapar.png",
   "fundo_lite_next_768_1024.PNG",
   "fundo_plus_estacenter.PNG",
   "fundo_plus_indigo.png",
+  "fundo_plus_estapar.png",
   "fundo_plus_next_1280_720.PNG",
 ];
 </script>
 
 <style scoped>
 .selected-card {
-  border: 10px solid orange;
+  border: 5px solid orange;
   box-shadow: 0 12px 12px rgba(25, 118, 210, 0.4);
-  transform: scale(1.02);
+  transform: scale(1.03);
 }
 .q-img__image {
   /* border-bottom: 5px solid #ccc; */
 }
 .q-card:hover {
-  transform: scale(1.02);
+  transform: scale(1.03);
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.15);
 }
 
 .cardImagem {
-  width: 150px;
+  width: 100px;
   height: fit-content;
   /* min-height: 170px; */
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   /* justify-items: center; */
-  justify-content: center;
+  justify-content: space-between;
   /* justify-self: center; */
 }
 .q-img {
@@ -135,5 +138,7 @@ const imagens = [
   /* justify-content: center; */
   /* align-items: center; */
   /* text-align: center; */
+}
+.geralFundoTela {
 }
 </style>

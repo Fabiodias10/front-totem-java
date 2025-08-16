@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
 import axios from "axios";
 import { useImagemStore } from "../stores/imagemStore";
+import { Notify } from "quasar";
 
 const imagemStore = useImagemStore();
 
@@ -34,7 +35,7 @@ export const useTotemAtualizaStore = defineStore("totemAtualiza", {
     async baixaOracle() {
       try {
         const response = await axios.post(
-          "http://localhost:9095/oracle/iniciar/totem/pacote_atualiza_totem.zip"
+          "http://192.168.0.155:9095/oracle/iniciar/totem/pacote_atualiza_totem.zip"
         );
 
         this.respostaDownload = response.data;
@@ -52,7 +53,7 @@ export const useTotemAtualizaStore = defineStore("totemAtualiza", {
     async status(job) {
       try {
         const response = await axios.get(
-          "http://localhost:9095/oracle/status/" + job
+          "http://192.168.0.155:9095/oracle/status/" + job
           // {
           //   ip: this.ipTotem,
           // }
@@ -70,7 +71,7 @@ export const useTotemAtualizaStore = defineStore("totemAtualiza", {
       this.loadVersao = true;
       try {
         const response = await axios.get(
-          "http://localhost:9095/totem/update/versao/" + versao
+          "http://192.168.0.155:9095/totem/update/versao/" + versao
           // {
           //   ip: this.ipTotem,
           // }
@@ -95,7 +96,7 @@ export const useTotemAtualizaStore = defineStore("totemAtualiza", {
       this.loadAudioOriginal = true;
       try {
         const response = await axios.get(
-          "http://localhost:9095/totem/update/audio_original"
+          "http://192.168.0.155:9095/totem/update/audio_original"
           // {
           //   ip: this.ipTotem,
           // }
@@ -118,14 +119,23 @@ export const useTotemAtualizaStore = defineStore("totemAtualiza", {
       this.loadFundoTela = true;
       try {
         const response = await axios.get(
-          "http://localhost:9095/totem/update/fundo/" + imagem
-          // {http://localhost:8080/totem/update/fundo/fundo_plus_indigo.png
+          "http://192.168.0.155:9095/totem/update/fundo/" + imagem
+          // {http://192.168.0.155:8080/totem/update/fundo/fundo_plus_indigo.png
           //   ip: this.ipTotem,
           // }
         );
         console.log(response.data);
 
         this.fundoTelaAtualizado = true;
+        Notify.create({
+          message: "Imagem fundo atualizada",
+          color: "green-7",
+          textColor: "white",
+          icon: "mdi-check-circle-outline",
+          position: "top-right",
+          timeout: 3000,
+          classes: "glossy shadow-5 rounded-borders text-body2",
+        });
       } catch (error) {
         // this.versaoAtualizada = null;
         console.log("Erro ao conectar: ", error);
