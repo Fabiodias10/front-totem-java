@@ -262,7 +262,7 @@
             class="full-width"
             label="Selecionar Arquivo"
             accept=".dump"
-            url="http://localhost:9095/restaurar"
+            :url="urlApiBackend"
             field-name="arquivo"
             :form-fields="[{ name: 'ip', value: totemStore.resposta.ip }]"
             @uploaded="onUploadConcluido"
@@ -291,7 +291,7 @@ const $q = useQuasar();
 import { Notify, Dialog } from "quasar";
 import { onMounted } from "vue";
 
-import { ref, watch } from "vue";
+import { ref, watch, computed } from "vue";
 import axios from "axios";
 import { useTotemStore } from "../stores/totemStore";
 import { useTotemAtualizaStore } from "../stores/totemAtualizaStore";
@@ -299,6 +299,11 @@ const totemStore = useTotemStore();
 const totemAtualizaStore = useTotemAtualizaStore();
 import { useRouter } from "vue-router"; // ✅ IMPORTANTE
 const router = useRouter(); // ✅ HOOK DO VUE ROUTER
+
+const urlApiBackend = computed(() => {
+  return `http://${totemStore.ipServidor}:9095/restaurar`;
+});
+
 defineOptions({
   name: "InicioTotem",
 });

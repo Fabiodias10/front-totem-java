@@ -3,6 +3,7 @@ import axios from "axios";
 
 export const useTotemStore = defineStore("totem", {
   state: () => ({
+    ipServidor: "localhost",
     ipTotem: "192.168.0.20",
     conectado: false,
     resposta: null,
@@ -16,20 +17,20 @@ export const useTotemStore = defineStore("totem", {
     doubleCount: (state) => state.counter * 2,
   },
   actions: {
-    // logout() {
-    //   (this.ipTotem = null),
-    //     (this.conectado = null),
-    //     (this.resposta = null),
-    //     (this.respostaDiretorioLocal = null),
-    //     (this.respostaDiretorioRemoto = null),
-    //     (this.load = null),
-    //     (this.existeDiretorio = null);
-    // },
+    ipServer() {},
 
     async pingBackend() {
+      console.log("pingBackend");
+
+      console.log(this.ipServidor);
+      console.log(this.ipServidor);
+
       try {
-        const response = await axios.get("http://localhost:9095/totem/ping");
-        // const response = await axios.get("http://localhost:9095/actuator/health");
+        const response = await axios.get(
+          // "http://" + this.ipServidor + ":9095/totem/ping"
+          `http://${this.ipServidor}:9095/totem/ping`
+        );
+        // const response = await axios.get("http://10.6.103.44:9095/actuator/health");
 
         if (response.status === 200) {
           this.backendAtivo = true;
@@ -41,10 +42,15 @@ export const useTotemStore = defineStore("totem", {
     },
 
     async autenticaTotem() {
+      console.log("autenticaTotem");
+
+      console.log(this.ipServidor);
+      console.log(this.ipServidor);
       this.load = true;
       try {
         const response = await axios.post(
-          "http://localhost:9095/totem/conecta",
+          // "http://" + this.ipServidor + ":9095/totem/conecta",
+          `http://${this.ipServidor}:9095/totem/conecta`,
           {
             ip: this.ipTotem,
           }
@@ -63,7 +69,7 @@ export const useTotemStore = defineStore("totem", {
     async verificaDiretorioPacoteTotem() {
       try {
         const response = await axios.get(
-          "http://localhost:9095/oracle/verifica_pacote_totem"
+          "http://" + this.ipServidor + ":9095/oracle/verifica_pacote_totem"
         );
         console.log("verificaDiretorioPacoteTotem: ", response.data);
 
@@ -79,7 +85,7 @@ export const useTotemStore = defineStore("totem", {
     async listaDiretorioLocal() {
       try {
         const response = await axios.get(
-          "http://localhost:9095/totem/listar_diretorio_local"
+          "http://" + this.ipServidor + ":9095/totem/listar_diretorio_local"
         );
         console.log("listaDiretorioLocal ", response.data);
 
@@ -98,7 +104,7 @@ export const useTotemStore = defineStore("totem", {
     async listaDiretorioRemoto() {
       try {
         const response = await axios.get(
-          "http://localhost:9095/totem/listar_Diretorio_remoto"
+          "http://" + this.ipServidor + ":9095/totem/listar_Diretorio_remoto"
         );
         console.log("listaDiretorioRemoto ", response.data);
 
@@ -114,7 +120,7 @@ export const useTotemStore = defineStore("totem", {
     async desconectaTotem() {
       try {
         const response = await axios.get(
-          "http://localhost:9095/totem/desconecta_sessao_ssh"
+          "http://" + this.ipServidor + ":9095/totem/desconecta_sessao_ssh"
         );
         console.log("desconectaTotem ", response.data);
 

@@ -1,6 +1,8 @@
 import { defineStore } from "pinia";
 import axios from "axios";
 
+import { useTotemStore } from "./totemStore";
+
 export const useTotemAtualizaStore = defineStore("totemAtualiza", {
   state: () => ({
     resposta: null,
@@ -29,9 +31,13 @@ export const useTotemAtualizaStore = defineStore("totemAtualiza", {
         (loadVersao = null);
     },
     async baixaOracle() {
+      const totemStore = useTotemStore(); // ✅ Acessa o outro store
+      const ip = totemStore.ipServidor;
       try {
         const response = await axios.post(
-          "http://localhost:9095/oracle/iniciar/totem/pacote_atualiza_totem.zip"
+          "http://" +
+            ip +
+            ":9095/oracle/iniciar/totem/pacote_atualiza_totem.zip"
         );
 
         this.respostaDownload = response.data;
@@ -47,9 +53,11 @@ export const useTotemAtualizaStore = defineStore("totemAtualiza", {
     },
 
     async status(job) {
+      const totemStore = useTotemStore(); // ✅ Acessa o outro store
+      const ip = totemStore.ipServidor;
       try {
         const response = await axios.get(
-          "http://localhost:9095/oracle/status/" + job
+          "http://" + ip + ":9095/oracle/status/" + job
           // {
           //   ip: this.ipTotem,
           // }
@@ -64,10 +72,12 @@ export const useTotemAtualizaStore = defineStore("totemAtualiza", {
     },
 
     async atualizaTotem(versao) {
+      const totemStore = useTotemStore(); // ✅ Acessa o outro store
+      const ip = totemStore.ipServidor;
       this.loadVersao = true;
       try {
         const response = await axios.get(
-          "http://localhost:9095/totem/update/versao/" + versao
+          "http://" + ip + ":9095/totem/update/versao/" + versao
           // {
           //   ip: this.ipTotem,
           // }
@@ -89,10 +99,12 @@ export const useTotemAtualizaStore = defineStore("totemAtualiza", {
       }
     },
     async atualizaTotemAudioOriginal() {
+      const totemStore = useTotemStore(); // ✅ Acessa o outro store
+      const ip = totemStore.ipServidor;
       this.loadAudioOriginal = true;
       try {
         const response = await axios.get(
-          "http://localhost:9095/totem/update/audio_original"
+          "http://" + ip + ":9095/totem/update/audio_original"
           // {
           //   ip: this.ipTotem,
           // }
@@ -112,11 +124,13 @@ export const useTotemAtualizaStore = defineStore("totemAtualiza", {
     },
 
     async atualizaFundoTela(imagem) {
+      const totemStore = useTotemStore(); // ✅ Acessa o outro store
+      const ip = totemStore.ipServidor;
       this.loadFundoTela = true;
       try {
         const response = await axios.get(
-          "http://localhost:9095/totem/update/fundo/" + imagem
-          // {http://localhost:8080/totem/update/fundo/fundo_plus_indigo.png
+          "http://" + ip + ":9095/totem/update/fundo/" + imagem
+          // {http://10.6.103.44:8080/totem/update/fundo/fundo_plus_indigo.png
           //   ip: this.ipTotem,
           // }
         );

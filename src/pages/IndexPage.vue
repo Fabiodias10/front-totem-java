@@ -29,6 +29,24 @@
         </q-card-section>
       </div>
 
+      <div class="row">
+        <q-card-section class="q-mx-auto">
+          <q-input
+            dense
+            tabindex="2"
+            rounded
+            v-model="totemStore.ipServidor"
+            label="IP Servidor"
+            type="text"
+            class="q-my-md"
+          >
+            <template v-slot:prepend>
+              <q-icon name="lan" />
+            </template>
+          </q-input>
+        </q-card-section>
+      </div>
+
       <q-card-actions vertical class="q-mx-xl q-mb-md">
         <q-btn
           size="md"
@@ -85,6 +103,8 @@ const ipTotem = ref(totemStore.ipTotem);
 // const backendAtivo = ref(totemStore.backendAtivo);
 const backendAtivo = computed(() => totemStore.backendAtivo);
 
+const ipServidor = computed(() => totemStore.ipServidor);
+
 // const load = ref(false);
 
 async function autentica() {
@@ -95,9 +115,9 @@ async function autentica() {
     Notify.create({
       type: "negative",
       message: erro,
-      caption: "Verifique se o totem está ligado",
+      // caption: "Verifique se o totem está ligado",
       position: "top",
-      timeout: 2000,
+      timeout: 2500,
       textColor: "white",
     });
     console.error("Falha na autenticação do totem:", erro);
