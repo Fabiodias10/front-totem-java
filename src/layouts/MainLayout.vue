@@ -11,9 +11,9 @@
           @click="toggleLeftDrawer"
         /> -->
 
-        <q-toolbar-title> Atualiza Totem </q-toolbar-title>
+        <q-toolbar-title> </q-toolbar-title>
 
-        <div>v 1.0.2</div>
+        <div>Versão 1.2.7</div>
       </q-toolbar>
     </q-header>
 

@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import axios from "axios";
+import { Notify } from "quasar";
 
 export const useTotemStore = defineStore("totem", {
   state: () => ({
@@ -12,6 +13,9 @@ export const useTotemStore = defineStore("totem", {
     load: false,
     existeDiretorio: null,
     backendAtivo: false,
+    statusConexaoSessaoSSH: null,
+    StatusDump: null,
+    loadDump: false,
   }),
   getters: {
     doubleCount: (state) => state.counter * 2,
@@ -66,6 +70,20 @@ export const useTotemStore = defineStore("totem", {
         this.load = false;
       }
     },
+
+    async carregaInfoTotem() {
+      try {
+        const response = await axios.get(
+          "http://192.168.0.155:9095/totem/carregaInfoTotem"
+        );
+
+        this.resposta = response.data;
+      } catch (error) {
+        this.resposta = null;
+        throw error.response?.data?.mensagem || "Erro desconhecido";
+      } finally {
+      }
+    },
     async verificaDiretorioPacoteTotem() {
       try {
         const response = await axios.get(
@@ -79,6 +97,37 @@ export const useTotemStore = defineStore("totem", {
         this.existeDiretorio = false;
         // throw error;
       } finally {
+      }
+    },
+
+    async statusConexaoSsh() {
+      try {
+        const response = await axios.get(
+          "http://192.168.0.155:9095/totem/status_conexao_ssh"
+        );
+        this.statusConexaoSessaoSSH = true;
+        console.log("statusConexaoSSH: ", response.data);
+      } catch (error) {
+        console.log("statusConexaoSSH", error);
+        this.statusConexaoSessaoSSH = false;
+        throw error;
+      } finally {
+      }
+    },
+
+    async dumpTotem() {
+      this.loadDump = true;
+      try {
+        const response = await axios.get("http://192.168.0.155:9095/dump");
+        console.log("dumpTotem: ", response.data);
+
+        this.StatusDump = response.data;
+      } catch (error) {
+        console.log("dumpTotem", error);
+        this.StatusDump = null;
+        throw new Error("Erro ao realiza Dump");
+      } finally {
+        this.loadDump = false;
       }
     },
 

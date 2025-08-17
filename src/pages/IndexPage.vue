@@ -1,18 +1,18 @@
 <template>
   <q-page class="geral col-12 column self-center items-center justify-center">
     <!-- <h1>Fabio</h1> -->
-    <q-card class="my-card shadow-3">
+    <q-card class="my-card shadow-15">
       <q-card-section class="titulos">
         <q-separator vertical color="blue" />
         <div class="text-h1 column items-center">
           <!-- <img src="../assets/logoPerto.png" width="140" /> -->
           <img src="../assets/wps-perto.jpg" width="250" />
         </div>
-        <div class="column items-center">Atualiza-Totem</div>
+        <div class="column items-center q-pt-sm">Atualiza-Totem</div>
       </q-card-section>
 
-      <div class="row">
-        <q-card-section class="q-mx-auto">
+      <div class="row justify-center">
+        <q-card-section class="">
           <q-input
             dense
             tabindex="1"
@@ -20,32 +20,36 @@
             v-model="totemStore.ipTotem"
             label="IP Totem"
             type="text"
-            class="q-my-md"
+            class="q-mx-md"
           >
             <template v-slot:prepend>
               <q-icon name="lan" />
             </template>
           </q-input>
-        </q-card-section>
-      </div>
 
-      <div class="row">
-        <q-card-section class="q-mx-auto">
           <q-input
             dense
             tabindex="2"
             rounded
+            outlined
             v-model="totemStore.ipServidor"
             label="IP Servidor"
             type="text"
-            class="q-my-md"
+            style="width: 150px"
+            class="q-my-md botaoServidor q-mx-auto"
           >
-            <template v-slot:prepend>
-              <q-icon name="lan" />
-            </template>
+            <!-- <template v-slot:prepend>
+              <q-icon name="server" />
+            </template> -->
           </q-input>
         </q-card-section>
       </div>
+
+      <!-- <div class="row"> -->
+      <!-- <q-card-section class="q-mx-auto"> -->
+
+      <!-- </q-card-section> -->
+      <!-- </div> -->
 
       <q-card-actions vertical class="q-mx-xl q-mb-md">
         <q-btn
@@ -63,7 +67,7 @@
           </template>
         </q-btn>
       </q-card-actions>
-      <div class="status-indicator q-ma-sm">
+      <div class="status-indicator q-ma-sm flex flex-center">
         <q-icon
           :name="backendAtivo ? 'check_circle' : 'cancel'"
           :color="backendAtivo ? 'positive' : 'negative'"
@@ -121,7 +125,7 @@ async function autentica() {
       textColor: "white",
     });
     console.error("Falha na autenticação do totem:", erro);
-    return; // ⚠️ Interrompe aqui se falhar
+    // return; // ⚠️ Interrompe aqui se falhar
   }
 
   await totemStore.listaDiretorioRemoto();
@@ -135,14 +139,14 @@ async function autentica() {
   // console.log(totemStore.respostaDiretorioLocal.versaoTinker);
 
   if (totemStore.conectado) {
-    Notify.create({
-      type: "positive",
-      message: "Totem conectado com sucesso!",
-      // caption: "",
-      position: "top",
-      timeout: 1000,
-      textColor: "black",
-    });
+    // Notify.create({
+    //   type: "positive",
+    //   message: "Totem conectado com sucesso!",
+    //   // caption: "",
+    //   position: "top",
+    //   timeout: 1000,
+    //   textColor: "black",
+    // });
     setTimeout(() => {
       router.push("/totem");
     }, 100);
@@ -155,18 +159,20 @@ onMounted(async () => {
 </script>
 
 <style scoped>
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap");
+
 .my-card {
   width: 330px;
-  border-radius: 10px;
-  height: 400px;
+  border-radius: 7px;
+  height: 460px;
 }
 
 .geral {
   opacity: 1;
-  /* background-image: url("/fundo3.png"); */
-  font-family: "Kanit";
-
-  /* background-size: 1466px 1000px; */
+  background-image: url("/fundo3.png");
+  /* font-family: "Kanit"; */
+  font-family: "Inter", sans-serif;
+  background-size: 1466px 1000px;
 }
 
 .versao {
@@ -175,7 +181,6 @@ onMounted(async () => {
 }
 
 .q-btn {
-  font-family: "Kanit";
   font-size: 14px;
   /* color: #1b2a35; */
 
@@ -192,7 +197,10 @@ onMounted(async () => {
 .titulos {
   background-color: #1b2a35;
   color: white;
-  font-family: "Kanit";
+  /* font-family: "Kanit"; */
   font-size: 16px;
+}
+.botaoServidor {
+  /* width: 150px; */
 }
 </style>

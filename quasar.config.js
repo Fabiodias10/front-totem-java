@@ -84,6 +84,7 @@ module.exports = configure(function (/* ctx */) {
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#framework
     framework: {
+      autoImportComponent: true,
       config: {},
 
       // iconSet: 'material-icons', // Quasar icon set
@@ -93,8 +94,11 @@ module.exports = configure(function (/* ctx */) {
       // (like functional components as one of the examples),
       // you can manually specify Quasar components/directives to be available everywhere:
       //
-      // components: [],
-      // directives: [],
+      // components: [
+
+      // ],
+
+      // directives: ["Ripple"],
 
       // Quasar plugins
       plugins: ["Notify", "Dialog"],
