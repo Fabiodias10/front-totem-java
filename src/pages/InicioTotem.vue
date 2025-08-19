@@ -21,6 +21,15 @@
                 class="q-pt-sm"
               />
             </div>
+            <!-- <q-btn
+              dense
+              label="teste"
+              rounded
+              push
+              size="md"
+              style="background-color: #0f909a; color: white"
+              @click="totemStore.dumpTotem()"
+            ></q-btn> -->
 
             <!-- <q-space></q-space> -->
 
@@ -225,6 +234,7 @@
                     push
                     size="md"
                     @click="dialogMidiaFundoPersonalizado = true"
+                    :disable="!totemStore.existeDiretorio"
                   >
                     <!-- :disable="true" -->
                     <!-- :disable="!totemStore.existeDiretorio" -->
@@ -322,10 +332,13 @@
                 </q-item-section>
               </q-item>
               <q-item class="flex-center">
-                <q-icon size="md" class="q-mr-sm" />
-                <!-- :name="statusIcone"
-                :color="statusCor" -->
-                <!-- <strong>{{ statusTexto }}</strong> -->
+                <q-icon
+                  size="md"
+                  class="q-mr-sm"
+                  :name="statusIcone"
+                  :color="statusCor"
+                />
+                <strong>{{ statusTexto }}</strong>
               </q-item>
             </q-list>
             <div class="row justify-center">
@@ -505,7 +518,7 @@
           <q-uploader
             class="full-width"
             label="Arquivo dump"
-            accept=".dump"
+            accept=".dump, .sql, .txt"
             :url="urlApiBackendRestaurar"
             field-name="arquivo"
             :form-fields="[{ name: 'ip', value: totemStore.resposta.ip }]"
@@ -614,6 +627,28 @@ const urlApiBackendMidiaSaida = computed(() => {
 
 const urlApiBackendFundoPersonalizado = computed(() => {
   return `http://${totemStore.ipServidor}:9095/FundoPersonalizado`;
+});
+
+const statusIcone = computed(() => {
+  // Exemplo: retorna ícone conforme status
+  if (totemStore.statusConexaoSessaoSSH == true) return "check_circle";
+  if (totemStore.statusConexaoSessaoSSH == false) return "cancel";
+  return "help";
+});
+
+const statusCor = computed(() => {
+  // Exemplo: retorna cor conforme status
+  if (totemStore.statusConexaoSessaoSSH == true) return "green";
+  if (totemStore.statusConexaoSessaoSSH == false) return "red";
+  return "grey";
+});
+
+const statusTexto = computed(() => {
+  // Exemplo: retorna texto conforme status
+  if (totemStore.statusConexaoSessaoSSH == true) return "Conectado ao totem";
+  if (totemStore.statusConexaoSessaoSSH == false)
+    return "Desconectado do totem, conecte novamente";
+  return "Desconhecido";
 });
 
 defineOptions({
@@ -748,7 +783,7 @@ function confirmDump() {
       await totemStore.dumpTotem();
       Notify.create({
         message: "     Dump realizado com sucesso     ",
-        caption: "     salvo em C:/temp/DumpTotem     ",
+        caption: "      ",
         color: "green-10",
         textColor: "white",
         icon: "mdi-check-circle-outline",
@@ -835,13 +870,68 @@ function onUploadConcluido(info) {
     position: "top",
   });
 }
-function onUploadErro() {
+// function onUploadErro(e) {
+//   $q.notify({
+//     type: "negative",
+//     message: e.mensagem,
+//     caption: "",
+//     timeout: 4000,
+//     position: "top",
+//   });
+// }
+
+function onUploadErro(file, error) {
+  let mensagem = "Falha ao enviar o arquivo.";
+  let detalhe = "Erro desconhecido";
+
+  try {
+    // Verifica se o objeto error e xhr existem
+    if (error && error.xhr) {
+      const xhr = error.xhr;
+      const { status, statusText, responseText } = xhr;
+
+      detalhe = `Erro ${status}: ${statusText}`;
+
+      // Tenta extrair JSON do backend
+      if (responseText) {
+        try {
+          const resposta = JSON.parse(responseText);
+
+          // Usa a chave "mensagem" do seu backend
+          if (resposta.mensagem) {
+            mensagem += " " + resposta.mensagem;
+          } else if (resposta.message) {
+            mensagem += " " + resposta.message;
+          } else {
+            // Se não tem mensagem clara, mostra um resumo
+            mensagem = "Upload falhou com erro no servidor.";
+          }
+        } catch (parseError) {
+          // Se não for JSON, usa o texto bruto (cortado, se muito grande)
+          const textoLimpo = responseText.trim().substring(0, 200);
+          detalhe = textoLimpo || statusText;
+        }
+      } else {
+        detalhe = statusText || "Sem resposta do servidor";
+      }
+    } else {
+      detalhe = "";
+    }
+  } catch (e) {
+    // Captura qualquer erro dentro do manipulador
+    console.error("Erro inesperado em onUploadErro:", e);
+    detalhe = "Erro interno no tratamento do upload";
+  }
+
+  // Garante que $q.notify está disponível
+
   $q.notify({
     type: "negative",
-    message: "Falha ao enviar.",
-    caption: "",
-    timeout: 4000,
+    message: mensagem,
+    caption: detalhe,
+    timeout: 6000,
     position: "top",
+    actions: [{ label: "Fechar", color: "white" }],
   });
 }
 

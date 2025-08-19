@@ -74,7 +74,7 @@ export const useTotemStore = defineStore("totem", {
     async carregaInfoTotem() {
       try {
         const response = await axios.get(
-          "http://192.168.0.155:9095/totem/carregaInfoTotem"
+          `http://${this.ipServidor}:9095/totem/carregaInfoTotem`
         );
 
         this.resposta = response.data;
@@ -87,7 +87,7 @@ export const useTotemStore = defineStore("totem", {
     async verificaDiretorioPacoteTotem() {
       try {
         const response = await axios.get(
-          "http://" + this.ipServidor + ":9095/oracle/verifica_pacote_totem"
+          `http://${this.ipServidor}:9095/oracle/verifica_pacote_totem`
         );
         console.log("verificaDiretorioPacoteTotem: ", response.data);
 
@@ -103,7 +103,7 @@ export const useTotemStore = defineStore("totem", {
     async statusConexaoSsh() {
       try {
         const response = await axios.get(
-          "http://192.168.0.155:9095/totem/status_conexao_ssh"
+          `http://${this.ipServidor}:9095/totem/status_conexao_ssh`
         );
         this.statusConexaoSessaoSSH = true;
         console.log("statusConexaoSSH: ", response.data);
@@ -115,17 +115,63 @@ export const useTotemStore = defineStore("totem", {
       }
     },
 
+    // async dumpTotem() {
+    //   this.loadDump = true;
+    //   try {
+    //     const response = await axios.get(`http://${this.ipServidor}:9095/dump`);
+    //     console.log("dumpTotem: ", response.data);
+
+    //     this.StatusDump = response.data;
+    //   } catch (error) {
+    //     console.log("dumpTotem", error);
+    //     this.StatusDump = null;
+    //     throw new Error("Erro ao realiza Dump");
+    //   } finally {
+    //     this.loadDump = false;
+    //   }
+    // },
+
     async dumpTotem() {
       this.loadDump = true;
+      this.StatusDump = "Iniciando backup...";
       try {
-        const response = await axios.get("http://192.168.0.155:9095/dump");
-        console.log("dumpTotem: ", response.data);
+        const response = await axios.get(
+          `http://${this.ipServidor}:9095/dump`,
+          {
+            responseType: "blob", // ⚠️ fundamental
+          }
+        );
 
-        this.StatusDump = response.data;
+        // Verifica se é erro (JSON dentro de blob)
+        const contentType = response.headers["content-type"];
+        if (contentType && contentType.includes("application/json")) {
+          const errorText = await new Blob([response.data]).text();
+          throw new Error(JSON.parse(errorText).message || "Erro desconhecido");
+        }
+
+        // 🔹 Usa direto o nome do backend
+        const contentDisposition = response.headers["content-disposition"];
+        let filename = "backup.dump"; // fallback
+
+        if (contentDisposition) {
+          const match = contentDisposition.match(/filename="(.+)"/);
+          if (match && match[1]) {
+            filename = match[1];
+          }
+        }
+
+        // Cria download
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = filename;
+        link.click();
+        window.URL.revokeObjectURL(url);
+
+        this.StatusDump = `✅ Backup salvo como: ${filename}`;
       } catch (error) {
-        console.log("dumpTotem", error);
-        this.StatusDump = null;
-        throw new Error("Erro ao realiza Dump");
+        console.error("Erro no dump:", error);
+        this.StatusDump = `❌ Falha: ${error.message}`;
       } finally {
         this.loadDump = false;
       }
@@ -134,7 +180,7 @@ export const useTotemStore = defineStore("totem", {
     async listaDiretorioLocal() {
       try {
         const response = await axios.get(
-          "http://" + this.ipServidor + ":9095/totem/listar_diretorio_local"
+          `http://${this.ipServidor}:9095/totem/listar_diretorio_local`
         );
         console.log("listaDiretorioLocal ", response.data);
 
@@ -153,7 +199,7 @@ export const useTotemStore = defineStore("totem", {
     async listaDiretorioRemoto() {
       try {
         const response = await axios.get(
-          "http://" + this.ipServidor + ":9095/totem/listar_Diretorio_remoto"
+          `http://${this.ipServidor}:9095/totem/listar_Diretorio_remoto`
         );
         console.log("listaDiretorioRemoto ", response.data);
 
@@ -169,7 +215,7 @@ export const useTotemStore = defineStore("totem", {
     async desconectaTotem() {
       try {
         const response = await axios.get(
-          "http://" + this.ipServidor + ":9095/totem/desconecta_sessao_ssh"
+          `http://${this.ipServidor}:9095/totem/desconecta_sessao_ssh`
         );
         console.log("desconectaTotem ", response.data);
 

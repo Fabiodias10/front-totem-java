@@ -99,11 +99,11 @@ const imagens = [
   "fundo_lite_estacenter.png",
   "fundo_lite_indigo.png",
   "fundo_lite_estapar.png",
-  "fundo_lite_next_768_1024.PNG",
+  "fundo_lite_next_768_1024.png",
   "fundo_plus_estacenter.PNG",
   "fundo_plus_indigo.png",
   "fundo_plus_estapar.png",
-  "fundo_plus_next_1280_720.PNG",
+  "fundo_plus_next_1280_720.png",
 ];
 </script>
 
